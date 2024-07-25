@@ -8,5 +8,5 @@ type TicketType struct {
 type Ticket struct {
 	ID    int        `json:"id"`
 	Stock uint       `json:"stock" validate:"gte=0, required"`
-	Type  TicketType `json:"type" validate:"dive"`
+	Type  TicketType `json:"type" validate:"dive, required"`
 }
