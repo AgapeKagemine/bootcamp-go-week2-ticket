@@ -1,6 +1,6 @@
 package domain
 
-type Transaction struct {
+type TransactionDetail struct {
 	ID            int      `json:"id"`
 	Time          string   `json:"time"`
 	Status        string   `json:"status"`

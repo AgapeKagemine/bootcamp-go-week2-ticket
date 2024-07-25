@@ -1,5 +1,7 @@
 package contract
 
+import "context"
+
 type DeleteById[T any] interface {
-	DeleteById(int) (T, error)
+	DeleteById(context.Context, int) error
 }

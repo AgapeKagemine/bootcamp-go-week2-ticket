@@ -1,5 +1,7 @@
 package contract
 
+import "context"
+
 type Save[T any] interface {
-	Save(*T) error
+	Save(context.Context, *T) error
 }

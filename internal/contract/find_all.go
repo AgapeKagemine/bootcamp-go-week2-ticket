@@ -1,5 +1,7 @@
 package contract
 
+import "context"
+
 type FindAll[T any] interface {
-	FindAll() ([]T, error)
+	FindAll(context.Context) ([]T, error)
 }

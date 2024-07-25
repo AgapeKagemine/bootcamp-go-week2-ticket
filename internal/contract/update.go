@@ -1,5 +1,7 @@
 package contract
 
+import "context"
+
 type Update[T any] interface {
-	Update(*T) error
+	Update(context.Context, *T) error
 }
