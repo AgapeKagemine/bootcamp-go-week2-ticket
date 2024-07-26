@@ -1,23 +1,24 @@
 package user
 
 import (
+	"context"
 	"gotik/internal/contract"
 	"gotik/internal/domain"
 )
 
-type UserRepository interface {
-	contract.FindAll[domain.User]
-	contract.FindById[domain.User]
-	contract.Save[domain.User]
-	contract.Update[domain.User]
-	contract.DeleteById[domain.User]
+type UserRepository[C context.Context, T domain.User] interface {
+	contract.FindAll[C, T]
+	contract.FindById[C, T]
+	contract.Save[C, T]
+	contract.Update[C, T]
+	contract.DeleteById[C]
 }
 
 type UserRepositoryImpl struct {
 	db map[int]domain.User
 }
 
-func NewUserRepository() UserRepository {
+func NewUserRepository() UserRepository[context.Context, domain.User] {
 	return UserRepositoryImpl{
 		db: make(map[int]domain.User),
 	}

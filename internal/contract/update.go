@@ -2,6 +2,6 @@ package contract
 
 import "context"
 
-type Update[T any] interface {
-	Update(context.Context, *T) error
+type Update[C context.Context, T any] interface {
+	Update(C, *T) error
 }

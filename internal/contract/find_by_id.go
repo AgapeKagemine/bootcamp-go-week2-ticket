@@ -2,6 +2,6 @@ package contract
 
 import "context"
 
-type FindById[T any] interface {
-	FindById(context.Context, int) (T, error)
+type FindById[C context.Context, T any] interface {
+	FindById(C, int) (T, error)
 }

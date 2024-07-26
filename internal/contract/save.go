@@ -2,6 +2,6 @@ package contract
 
 import "context"
 
-type Save[T any] interface {
-	Save(context.Context, *T) error
+type Save[C context.Context, T any] interface {
+	Save(C, *T) error
 }
