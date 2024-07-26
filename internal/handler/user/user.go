@@ -1,7 +1,7 @@
 package user
 
 import (
-	"gotik/internal/handler/contract"
+	contract "gotik/internal/handler/contract/http"
 	"gotik/internal/usecase/user"
 )
 
