@@ -4,6 +4,7 @@ import (
 	"context"
 	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"sync"
 )
 
 type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] interface {
@@ -14,10 +15,12 @@ type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] 
 
 type TransactionDetailRepositoryImpl struct {
 	db map[int]domain.TransactionDetail
+	*sync.Mutex
 }
 
 func NewTransactionDetailRepository() TransactionDetailRepository[context.Context, domain.TransactionDetail] {
 	return &TransactionDetailRepositoryImpl{
-		db: make(map[int]domain.TransactionDetail),
+		db:    make(map[int]domain.TransactionDetail),
+		Mutex: &sync.Mutex{},
 	}
 }

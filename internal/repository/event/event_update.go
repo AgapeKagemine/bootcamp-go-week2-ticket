@@ -10,6 +10,8 @@ import (
 
 // Update implements EventRepository.
 func (repo *EventRepositoryImpl) Update(ctx context.Context, event *domain.Event) error {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if !util.IsExist(repo.db, event.ID) {
 		return errors.New("event not found")
 	}

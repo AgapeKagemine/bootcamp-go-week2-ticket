@@ -9,6 +9,8 @@ import (
 
 // FindAll implements TransactionDetailRepository.
 func (repo TransactionDetailRepositoryImpl) FindAll(ctx context.Context) (transaction_details []domain.TransactionDetail, err error) {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsEmpty(repo.db) {
 		return nil, errors.New("no transaction detail found")
 	}

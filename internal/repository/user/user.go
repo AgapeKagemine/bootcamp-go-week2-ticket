@@ -4,6 +4,7 @@ import (
 	"context"
 	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"sync"
 )
 
 type UserRepository[C context.Context, T domain.User] interface {
@@ -16,10 +17,12 @@ type UserRepository[C context.Context, T domain.User] interface {
 
 type UserRepositoryImpl struct {
 	db map[int]domain.User
+	*sync.Mutex
 }
 
 func NewUserRepository() UserRepository[context.Context, domain.User] {
 	return &UserRepositoryImpl{
-		db: make(map[int]domain.User),
+		db:    make(map[int]domain.User),
+		Mutex: &sync.Mutex{},
 	}
 }

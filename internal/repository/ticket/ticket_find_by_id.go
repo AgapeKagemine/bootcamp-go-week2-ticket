@@ -9,6 +9,8 @@ import (
 
 // FindById implements TicketRepository.
 func (repo TicketRepositoryImpl) FindById(ctx context.Context, id int) (ticket domain.Ticket, err error) {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if !util.IsExist(repo.db, id) {
 		return domain.Ticket{}, errors.New("ticket not found")
 	}

@@ -9,6 +9,8 @@ import (
 
 // FindById implements EventRepository.
 func (repo EventRepositoryImpl) FindById(ctx context.Context, id int) (event domain.Event, err error) {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if !util.IsExist(repo.db, id) {
 		return domain.Event{}, errors.New("event not found")
 	}

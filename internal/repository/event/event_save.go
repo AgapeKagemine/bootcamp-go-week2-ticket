@@ -10,6 +10,8 @@ import (
 
 // Save implements EventRepository.
 func (repo *EventRepositoryImpl) Save(ctx context.Context, event *domain.Event) error {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsExist(repo.db, event.ID) {
 		return errors.New("event already exists")
 	}

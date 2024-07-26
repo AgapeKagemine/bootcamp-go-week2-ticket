@@ -9,6 +9,8 @@ import (
 
 // FindById implements TransactionDetailRepository.
 func (repo TransactionDetailRepositoryImpl) FindById(ctx context.Context, id int) (transaction_detail domain.TransactionDetail, err error) {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if !util.IsExist(repo.db, id) {
 		return domain.TransactionDetail{}, errors.New("transaction detail not found")
 	}

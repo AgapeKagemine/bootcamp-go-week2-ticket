@@ -10,6 +10,8 @@ import (
 
 // Save implements TicketRepository.
 func (repo *TicketRepositoryImpl) Save(ctx context.Context, ticket *domain.Ticket) error {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsExist(repo.db, ticket.ID) {
 		return errors.New("ticket already exists")
 	}

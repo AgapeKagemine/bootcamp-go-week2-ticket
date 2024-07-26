@@ -9,6 +9,8 @@ import (
 
 // FindAll implements UserRepository.
 func (repo UserRepositoryImpl) FindAll(ctx context.Context) (users []domain.User, err error) {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsEmpty(repo.db) {
 		return nil, errors.New("no user found")
 	}

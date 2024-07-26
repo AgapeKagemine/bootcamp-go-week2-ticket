@@ -10,6 +10,8 @@ import (
 
 // Save implements TransactionDetailRepository.
 func (repo *TransactionDetailRepositoryImpl) Save(ctx context.Context, transaction_detail *domain.TransactionDetail) error {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsExist(repo.db, transaction_detail.ID) {
 		return errors.New("transaction detail already exists")
 	}

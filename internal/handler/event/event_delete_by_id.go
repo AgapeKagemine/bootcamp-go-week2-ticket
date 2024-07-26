@@ -1,6 +1,8 @@
 package event
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // DeleteById implements EventHandler.
 func (h EventHandlerImpl) DeleteById(w http.ResponseWriter, r *http.Request) {

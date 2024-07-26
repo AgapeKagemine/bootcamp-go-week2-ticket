@@ -10,6 +10,8 @@ import (
 
 // Save implements UserRepository.
 func (repo *UserRepositoryImpl) Save(ctx context.Context, user *domain.User) error {
+	repo.Mutex.Lock()
+	defer repo.Mutex.Unlock()
 	if util.IsExist(repo.db, user.ID) {
 		return errors.New("user already exists")
 	}
