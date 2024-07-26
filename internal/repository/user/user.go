@@ -19,7 +19,7 @@ type UserRepositoryImpl struct {
 }
 
 func NewUserRepository() UserRepository[context.Context, domain.User] {
-	return UserRepositoryImpl{
+	return &UserRepositoryImpl{
 		db: make(map[int]domain.User),
 	}
 }

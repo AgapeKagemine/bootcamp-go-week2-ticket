@@ -8,7 +8,7 @@ import (
 )
 
 // DeleteById implements UserRepository.
-func (repo UserRepositoryImpl) DeleteById(ctx context.Context, id int) error {
+func (repo *UserRepositoryImpl) DeleteById(ctx context.Context, id int) error {
 	if !util.IsExist(repo.db, id) {
 		return errors.New("user not found")
 	}

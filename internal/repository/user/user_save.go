@@ -9,7 +9,7 @@ import (
 )
 
 // Save implements UserRepository.
-func (repo UserRepositoryImpl) Save(ctx context.Context, user *domain.User) error {
+func (repo *UserRepositoryImpl) Save(ctx context.Context, user *domain.User) error {
 	if util.IsExist(repo.db, user.ID) {
 		return errors.New("user already exists")
 	}

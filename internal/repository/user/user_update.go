@@ -9,7 +9,7 @@ import (
 )
 
 // Update implements UserRepository.
-func (repo UserRepositoryImpl) Update(ctx context.Context, user *domain.User) error {
+func (repo *UserRepositoryImpl) Update(ctx context.Context, user *domain.User) error {
 	if !util.IsExist(repo.db, user.ID) {
 		return errors.New("user not found")
 	}
