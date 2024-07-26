@@ -8,7 +8,7 @@ import (
 )
 
 // DeleteById implements EventRepository.
-func (repo EventRepositoryImpl) DeleteById(ctx context.Context, id int) error {
+func (repo *EventRepositoryImpl) DeleteById(ctx context.Context, id int) error {
 	if !util.IsExist(repo.db, id) {
 		return errors.New("event not found")
 	}

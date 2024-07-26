@@ -1,11 +1,11 @@
 package event
 
 import (
-	"context"
 	"gotik/internal/domain"
+	"net/http"
 )
 
 // Update implements EventHandler.
-func (h EventHandlerImpl) Update(ctx context.Context, event *domain.Event) error {
-	return h.uc.Update(ctx, event)
+func (h EventHandlerImpl) Update(w http.ResponseWriter, r *http.Request) {
+	h.uc.Update(r.Context(), &domain.Event{})
 }

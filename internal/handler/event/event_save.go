@@ -1,11 +1,11 @@
 package event
 
 import (
-	"context"
 	"gotik/internal/domain"
+	"net/http"
 )
 
 // Save implements EventHandler.
-func (h EventHandlerImpl) Save(ctx context.Context, event *domain.Event) error {
-	return h.uc.Save(ctx, event)
+func (h EventHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
+	h.uc.Save(r.Context(), &domain.Event{})
 }

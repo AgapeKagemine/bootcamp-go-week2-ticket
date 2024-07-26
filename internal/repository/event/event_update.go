@@ -9,7 +9,7 @@ import (
 )
 
 // Update implements EventRepository.
-func (repo EventRepositoryImpl) Update(ctx context.Context, event *domain.Event) error {
+func (repo *EventRepositoryImpl) Update(ctx context.Context, event *domain.Event) error {
 	if !util.IsExist(repo.db, event.ID) {
 		return errors.New("event not found")
 	}

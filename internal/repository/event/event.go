@@ -19,7 +19,7 @@ type EventRepositoryImpl struct {
 }
 
 func NewEventRepository() EventRepository[context.Context, domain.Event] {
-	return EventRepositoryImpl{
+	return &EventRepositoryImpl{
 		db: make(map[int]domain.Event),
 	}
 }

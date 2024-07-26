@@ -1,11 +1,11 @@
 package user
 
 import (
-	"context"
 	"gotik/internal/domain"
+	"net/http"
 )
 
 // Save implements UserHandler.
-func (h UserHandlerImpl) Save(ctx context.Context, user *domain.User) error {
-	return h.uc.Save(ctx, user)
+func (h UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
+	h.uc.Save(r.Context(), &domain.User{})
 }

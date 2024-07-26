@@ -1,11 +1,8 @@
 package event
 
-import (
-	"context"
-	"gotik/internal/domain"
-)
+import "net/http"
 
 // FindById implements EventHandler.
-func (h EventHandlerImpl) FindById(ctx context.Context, id int) (event domain.Event, err error) {
-	return h.uc.FindById(ctx, id)
+func (h EventHandlerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	h.uc.FindById(r.Context(), 1)
 }

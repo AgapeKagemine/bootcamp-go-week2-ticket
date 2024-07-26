@@ -1,11 +1,8 @@
 package user
 
-import (
-	"context"
-	"gotik/internal/domain"
-)
+import "net/http"
 
 // FindAll implements UserHandler.
-func (h UserHandlerImpl) FindAll(ctx context.Context) (users []domain.User, err error) {
-	return h.uc.FindAll(ctx)
+func (h UserHandlerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
+	h.uc.FindAll(r.Context())
 }

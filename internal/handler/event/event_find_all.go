@@ -1,11 +1,8 @@
 package event
 
-import (
-	"context"
-	"gotik/internal/domain"
-)
+import "net/http"
 
 // FindAll implements EventHandler.
-func (h EventHandlerImpl) FindAll(ctx context.Context) (events []domain.Event, err error) {
-	return h.uc.FindAll(ctx)
+func (h EventHandlerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
+	h.uc.FindAll(r.Context())
 }

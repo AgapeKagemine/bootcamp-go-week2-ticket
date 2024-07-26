@@ -1,10 +1,8 @@
 package event
 
-import (
-	"context"
-)
+import "net/http"
 
 // DeleteById implements EventHandler.
-func (h EventHandlerImpl) DeleteById(ctx context.Context, id int) error {
-	return h.uc.DeleteById(ctx, id)
+func (h EventHandlerImpl) DeleteById(w http.ResponseWriter, r *http.Request) {
+	h.uc.DeleteById(r.Context(), 1)
 }

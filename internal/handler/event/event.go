@@ -1,11 +1,16 @@
 package event
 
 import (
+	"gotik/internal/handler/contract"
 	"gotik/internal/usecase/event"
 )
 
 type EventHandler interface {
-	event.EventUsecase
+	contract.FindAll
+	contract.FindById
+	contract.Save
+	contract.Update
+	contract.DeleteById
 }
 
 type EventHandlerImpl struct {

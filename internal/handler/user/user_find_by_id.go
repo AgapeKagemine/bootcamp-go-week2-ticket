@@ -1,11 +1,8 @@
 package user
 
-import (
-	"context"
-	"gotik/internal/domain"
-)
+import "net/http"
 
 // FindById implements UserHandler.
-func (h UserHandlerImpl) FindById(ctx context.Context, id int) (user domain.User, err error) {
-	return h.uc.FindById(ctx, id)
+func (h UserHandlerImpl) FindById(w http.ResponseWriter, r *http.Request) {
+	h.uc.FindById(r.Context(), 1)
 }
