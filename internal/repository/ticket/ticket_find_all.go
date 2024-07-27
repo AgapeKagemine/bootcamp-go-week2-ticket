@@ -8,7 +8,7 @@ import (
 )
 
 // FindAll implements TicketRepository.
-func (repo TicketRepositoryImpl) FindAll(ctx context.Context) (tickets []domain.Ticket, err error) {
+func (repo *TicketRepositoryImpl) FindAll(ctx context.Context) (tickets []domain.Ticket, err error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 	if util.IsEmpty(repo.db) {

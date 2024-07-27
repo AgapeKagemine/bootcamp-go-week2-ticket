@@ -16,7 +16,7 @@ type TicketHandlerImpl struct {
 }
 
 func NewTicketHandler(uc ticket.TicketUsecase) TicketHandler {
-	return TicketHandlerImpl{
+	return &TicketHandlerImpl{
 		uc: uc,
 	}
 }

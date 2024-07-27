@@ -8,7 +8,7 @@ import (
 )
 
 // FindAll implements TransactionDetailRepository.
-func (repo TransactionDetailRepositoryImpl) FindAll(ctx context.Context) (tds []domain.TransactionDetail, err error) {
+func (repo *TransactionDetailRepositoryImpl) FindAll(ctx context.Context) (tds []domain.TransactionDetail, err error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 	if util.IsEmpty(repo.db) {

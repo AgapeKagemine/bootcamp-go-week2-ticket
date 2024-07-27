@@ -6,6 +6,6 @@ import (
 )
 
 // FindById implements TransactionDetailUsecase.
-func (uc TransactionDetailUsecaseImpl) FindById(ctx context.Context, id int) (td domain.TransactionDetail, err error) {
+func (uc *TransactionDetailUsecaseImpl) FindById(ctx context.Context, id int) (td domain.TransactionDetail, err error) {
 	return uc.repo.FindById(ctx, id)
 }

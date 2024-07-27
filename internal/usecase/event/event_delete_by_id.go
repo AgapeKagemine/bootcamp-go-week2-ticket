@@ -5,6 +5,6 @@ import (
 )
 
 // DeleteById implements EventUsecase.
-func (uc EventUsecaseImpl) DeleteById(ctx context.Context, id int) error {
+func (uc *EventUsecaseImpl) DeleteById(ctx context.Context, id int) error {
 	return uc.repo.DeleteById(ctx, id)
 }

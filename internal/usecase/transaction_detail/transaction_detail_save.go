@@ -6,6 +6,6 @@ import (
 )
 
 // Save implements TransactionDetailUsecase.
-func (uc TransactionDetailUsecaseImpl) Save(ctx context.Context, td *domain.TransactionDetail) error {
+func (uc *TransactionDetailUsecaseImpl) Save(ctx context.Context, td *domain.TransactionDetail) error {
 	return uc.repo.Save(ctx, td)
 }

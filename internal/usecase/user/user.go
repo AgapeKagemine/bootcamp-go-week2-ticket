@@ -15,7 +15,7 @@ type UserUsecaseImpl struct {
 }
 
 func NewUserUsecase(repo user.UserRepository[context.Context, domain.User]) UserUsecase {
-	return UserUsecaseImpl{
+	return &UserUsecaseImpl{
 		repo: repo,
 	}
 }

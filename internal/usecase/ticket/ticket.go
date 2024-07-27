@@ -15,7 +15,7 @@ type TicketUsecaseImpl struct {
 }
 
 func NewTicketUsecase(repo ticket.TicketRepository[context.Context, domain.Ticket]) TicketUsecase {
-	return TicketUsecaseImpl{
+	return &TicketUsecaseImpl{
 		repo: repo,
 	}
 }

@@ -6,6 +6,6 @@ import (
 )
 
 // Save implements UserUsecase.
-func (uc UserUsecaseImpl) Save(ctx context.Context, user *domain.User) error {
+func (uc *UserUsecaseImpl) Save(ctx context.Context, user *domain.User) error {
 	return uc.repo.Save(ctx, user)
 }

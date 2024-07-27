@@ -6,6 +6,6 @@ import (
 )
 
 // FindById implements UserUsecase.
-func (uc UserUsecaseImpl) FindById(ctx context.Context, id int) (user domain.User, err error) {
+func (uc *UserUsecaseImpl) FindById(ctx context.Context, id int) (user domain.User, err error) {
 	return uc.repo.FindById(ctx, id)
 }

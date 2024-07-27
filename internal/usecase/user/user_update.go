@@ -6,6 +6,6 @@ import (
 )
 
 // Update implements UserUsecase.
-func (uc UserUsecaseImpl) Update(ctx context.Context, user *domain.User) error {
+func (uc *UserUsecaseImpl) Update(ctx context.Context, user *domain.User) error {
 	return uc.repo.Update(ctx, user)
 }

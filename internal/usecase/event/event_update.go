@@ -6,6 +6,6 @@ import (
 )
 
 // Update implements EventUsecase.
-func (uc EventUsecaseImpl) Update(ctx context.Context, event *domain.Event) error {
+func (uc *EventUsecaseImpl) Update(ctx context.Context, event *domain.Event) error {
 	return uc.repo.Update(ctx, event)
 }

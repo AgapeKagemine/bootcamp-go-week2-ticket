@@ -18,7 +18,7 @@ type EventHandlerImpl struct {
 }
 
 func NewEventHandler(uc event.EventUsecase) EventHandler {
-	return EventHandlerImpl{
+	return &EventHandlerImpl{
 		uc: uc,
 	}
 }

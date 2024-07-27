@@ -15,7 +15,7 @@ type TransactionDetailUsecaseImpl struct {
 }
 
 func NewTransactionDetailUsecase(repo transaction_detail.TransactionDetailRepository[context.Context, domain.TransactionDetail]) TransactionDetailUsecase {
-	return TransactionDetailUsecaseImpl{
+	return &TransactionDetailUsecaseImpl{
 		repo: repo,
 	}
 }

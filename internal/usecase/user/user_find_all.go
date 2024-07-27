@@ -6,6 +6,6 @@ import (
 )
 
 // FindAll implements UserUsecase.
-func (uc UserUsecaseImpl) FindAll(ctx context.Context) (users []domain.User, err error) {
+func (uc *UserUsecaseImpl) FindAll(ctx context.Context) (users []domain.User, err error) {
 	return uc.repo.FindAll(ctx)
 }

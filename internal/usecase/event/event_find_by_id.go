@@ -6,6 +6,6 @@ import (
 )
 
 // FindById implements EventUsecase.
-func (uc EventUsecaseImpl) FindById(ctx context.Context, id int) (event domain.Event, err error) {
+func (uc *EventUsecaseImpl) FindById(ctx context.Context, id int) (event domain.Event, err error) {
 	return uc.repo.FindById(ctx, id)
 }

@@ -6,6 +6,6 @@ import (
 )
 
 // Save implements TicketUsecase.
-func (uc TicketUsecaseImpl) Save(ctx context.Context, ticket *domain.Ticket) error {
+func (uc *TicketUsecaseImpl) Save(ctx context.Context, ticket *domain.Ticket) error {
 	return uc.repo.Save(ctx, ticket)
 }

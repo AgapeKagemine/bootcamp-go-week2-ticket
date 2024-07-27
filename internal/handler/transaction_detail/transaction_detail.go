@@ -16,7 +16,7 @@ type TransactionDetailHandlerImpl struct {
 }
 
 func NewTransactionDetailHandler(uc transaction_detail.TransactionDetailUsecase) TransactionDetailHandler {
-	return TransactionDetailHandlerImpl{
+	return &TransactionDetailHandlerImpl{
 		uc: uc,
 	}
 }

@@ -6,6 +6,6 @@ import (
 )
 
 // Save implements EventUsecase.
-func (uc EventUsecaseImpl) Save(ctx context.Context, event *domain.Event) error {
+func (uc *EventUsecaseImpl) Save(ctx context.Context, event *domain.Event) error {
 	return uc.repo.Save(ctx, event)
 }

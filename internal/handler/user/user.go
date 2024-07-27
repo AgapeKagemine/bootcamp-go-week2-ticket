@@ -18,7 +18,7 @@ type UserHandlerImpl struct {
 }
 
 func NewUserHandler(uc user.UserUsecase) UserHandler {
-	return UserHandlerImpl{
+	return &UserHandlerImpl{
 		uc: uc,
 	}
 }

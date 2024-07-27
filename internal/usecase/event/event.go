@@ -15,7 +15,7 @@ type EventUsecaseImpl struct {
 }
 
 func NewEventUsecase(repo event.EventRepository[context.Context, domain.Event]) EventUsecase {
-	return EventUsecaseImpl{
+	return &EventUsecaseImpl{
 		repo: repo,
 	}
 }

@@ -8,7 +8,7 @@ import (
 )
 
 // FindAll implements EventRepository.
-func (repo EventRepositoryImpl) FindAll(ctx context.Context) (events []domain.Event, err error) {
+func (repo *EventRepositoryImpl) FindAll(ctx context.Context) (events []domain.Event, err error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 	if util.IsEmpty(repo.db) {

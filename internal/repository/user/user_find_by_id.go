@@ -8,7 +8,7 @@ import (
 )
 
 // FindById implements UserRepository.
-func (repo UserRepositoryImpl) FindById(ctx context.Context, id int) (user domain.User, err error) {
+func (repo *UserRepositoryImpl) FindById(ctx context.Context, id int) (user domain.User, err error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 	if !util.IsExist(repo.db, id) {
