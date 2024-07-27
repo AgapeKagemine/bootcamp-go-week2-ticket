@@ -8,5 +8,10 @@ import (
 
 // FindAll implements UserUsecase.
 func (uc *UserUsecaseImpl) FindAll(ctx context.Context) (users []domain.User, err error) {
-	return uc.repo.FindAll(ctx)
+	users, err = uc.repo.FindAll(ctx)
+	if err != nil {
+		return make([]domain.User, 0), err
+	}
+
+	return users, nil
 }

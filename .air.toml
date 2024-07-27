@@ -21,7 +21,7 @@ tmp_dir = "tmp"
   poll = false
   poll_interval = 0
   post_cmd = []
-  pre_cmd = []
+  pre_cmd = ["clear"]
   rerun = false
   rerun_delay = 500
   send_interrupt = true
@@ -39,13 +39,13 @@ tmp_dir = "tmp"
   time = true
 
 [misc]
-  clean_on_exit = true
+  clean_on_exit = false
 
 [proxy]
-  app_port = 8081
+  app_port = 8080
   enabled = false
   proxy_port = 8001
 
 [screen]
-  clear_on_rebuild = true
+  clear_on_rebuild = false
   keep_scroll = true

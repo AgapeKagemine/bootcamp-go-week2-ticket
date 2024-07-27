@@ -1,8 +1,9 @@
 package domain
 
 type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username" validate:"required, notblank, alpha, len=2"`
-	Phone    string `json:"phone" validate:"format=e164, required, notblank"`
-	Email    string `json:"email" validate:"format=email, required, notblank"`
+	ID       int      `json:"id,omitempty"`
+	Username *string  `json:"username"`
+	Phone    *string  `json:"phone"`
+	Email    *string  `json:"email"`
+	Balance  *float64 `json:"balance"`
 }

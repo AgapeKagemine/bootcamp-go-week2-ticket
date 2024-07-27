@@ -6,5 +6,5 @@ type Event struct {
 	Date        string   `json:"date"`
 	Description string   `json:"description"`
 	Location    string   `json:"location"`
-	Ticket      []Ticket `json:"tickets"`
+	Ticket      []Ticket `json:"ticket"`
 }
