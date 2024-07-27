@@ -1,8 +1,9 @@
-package transaction_detail
+package transactiondetail
 
 import (
-	"gotik/internal/domain"
 	"net/http"
+
+	"gotik/internal/domain"
 )
 
 // Save implements TransactionDetailHandler.

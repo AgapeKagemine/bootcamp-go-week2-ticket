@@ -2,9 +2,10 @@ package event
 
 import (
 	"context"
+	"sync"
+
 	"gotik/internal/contract"
 	"gotik/internal/domain"
-	"sync"
 )
 
 type EventRepository[C context.Context, T domain.Event] interface {

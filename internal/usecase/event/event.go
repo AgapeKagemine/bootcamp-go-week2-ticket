@@ -2,6 +2,7 @@ package event
 
 import (
 	"context"
+
 	"gotik/internal/domain"
 	"gotik/internal/repository/event"
 )

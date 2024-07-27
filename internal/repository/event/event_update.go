@@ -3,7 +3,7 @@ package event
 import (
 	"context"
 	"errors"
-	"fmt"
+
 	"gotik/internal/domain"
 	"gotik/internal/util"
 )
@@ -12,10 +12,12 @@ import (
 func (repo *EventRepositoryImpl) Update(ctx context.Context, event *domain.Event) error {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
+
 	if !util.IsExist(repo.db, event.ID) {
 		return errors.New("event not found")
 	}
+
 	repo.db[event.ID] = *event
-	fmt.Println("event updated successfully")
+
 	return nil
 }

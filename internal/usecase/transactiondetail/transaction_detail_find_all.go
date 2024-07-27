@@ -1,7 +1,8 @@
-package transaction_detail
+package transactiondetail
 
 import (
 	"context"
+
 	"gotik/internal/domain"
 )
 

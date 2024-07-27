@@ -1,8 +1,8 @@
-package transaction_detail
+package transactiondetail
 
 import (
 	contract "gotik/internal/handler/contract/http"
-	"gotik/internal/usecase/transaction_detail"
+	"gotik/internal/usecase/transactiondetail"
 )
 
 type TransactionDetailHandler interface {
@@ -12,10 +12,10 @@ type TransactionDetailHandler interface {
 }
 
 type TransactionDetailHandlerImpl struct {
-	uc transaction_detail.TransactionDetailUsecase
+	uc transactiondetail.TransactionDetailUsecase
 }
 
-func NewTransactionDetailHandler(uc transaction_detail.TransactionDetailUsecase) TransactionDetailHandler {
+func NewTransactionDetailHandler(uc transactiondetail.TransactionDetailUsecase) TransactionDetailHandler {
 	return &TransactionDetailHandlerImpl{
 		uc: uc,
 	}

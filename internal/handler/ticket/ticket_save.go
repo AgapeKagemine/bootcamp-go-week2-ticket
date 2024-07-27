@@ -1,8 +1,9 @@
 package ticket
 
 import (
-	"gotik/internal/domain"
 	"net/http"
+
+	"gotik/internal/domain"
 )
 
 // Save implements TicketHandler.

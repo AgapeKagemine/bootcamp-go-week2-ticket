@@ -1,10 +1,11 @@
-package transaction_detail
+package transactiondetail
 
 import (
 	"context"
+	"sync"
+
 	"gotik/internal/contract"
 	"gotik/internal/domain"
-	"sync"
 )
 
 type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] interface {

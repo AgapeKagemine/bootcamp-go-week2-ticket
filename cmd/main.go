@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Graveful Shutdown: https://medium.com/@dsilverdi/graceful-shutdown-in-go-a-polite-way-to-end-programs-6af16e025549
+// Gravcful Shutdown: https://medium.com/@dsilverdi/graceful-shutdown-in-go-a-polite-way-to-end-programs-6af16e025549
 // Function to start the HTTP Server, with context
 func startHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -50,6 +50,7 @@ func startHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 	// Checking if the context is canceled
 	if err := ctx.Err(); err != nil {
 		log.Error().Err(err).Msg("Shutting down server...")
+
 		// Context with 5 seconds timeout
 		shutdown_ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
@@ -61,12 +62,11 @@ func startHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 		}
 	}
 
-	// Server stopped
 	log.Error().Msg("HTTP server stopped")
 }
 
 func main() {
-	// Zerolog Time Formating
+	// Zerolog Time Formating > "Mon, 02 Jan 2006 15:04:05 MST"
 	zerolog.TimeFieldFormat = time.RFC1123
 
 	// Context with the ability to cancel the context
@@ -101,5 +101,4 @@ func main() {
 	wg.Wait()
 
 	log.Log().Msg("Shutdown complete")
-
 }

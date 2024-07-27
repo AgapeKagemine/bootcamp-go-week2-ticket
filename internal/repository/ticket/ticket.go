@@ -2,9 +2,10 @@ package ticket
 
 import (
 	"context"
+	"sync"
+
 	"gotik/internal/contract"
 	"gotik/internal/domain"
-	"sync"
 )
 
 type TicketRepository[C context.Context, T domain.Ticket] interface {

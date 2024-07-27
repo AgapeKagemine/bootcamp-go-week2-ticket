@@ -2,9 +2,10 @@ package user
 
 import (
 	"context"
+	"sync"
+
 	"gotik/internal/contract"
 	"gotik/internal/domain"
-	"sync"
 )
 
 type UserRepository[C context.Context, T domain.User] interface {

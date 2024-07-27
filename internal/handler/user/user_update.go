@@ -1,8 +1,9 @@
 package user
 
 import (
-	"gotik/internal/domain"
 	"net/http"
+
+	"gotik/internal/domain"
 )
 
 // Update implements UserHandler.

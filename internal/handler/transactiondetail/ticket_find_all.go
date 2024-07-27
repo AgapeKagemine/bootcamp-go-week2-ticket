@@ -1,4 +1,4 @@
-package transaction_detail
+package transactiondetail
 
 import "net/http"
 

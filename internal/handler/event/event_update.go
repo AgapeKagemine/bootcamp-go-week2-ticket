@@ -1,8 +1,9 @@
 package event
 
 import (
-	"gotik/internal/domain"
 	"net/http"
+
+	"gotik/internal/domain"
 )
 
 // Update implements EventHandler.

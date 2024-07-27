@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
+
 	"gotik/internal/util"
 )
 
@@ -11,10 +11,12 @@ import (
 func (repo *UserRepositoryImpl) DeleteById(ctx context.Context, id int) error {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
+
 	if !util.IsExist(repo.db, id) {
 		return errors.New("user not found")
 	}
+
 	delete(repo.db, id)
-	fmt.Println("user deleted successfully")
+
 	return nil
 }
