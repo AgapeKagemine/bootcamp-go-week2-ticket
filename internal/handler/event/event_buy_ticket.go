@@ -41,17 +41,17 @@ func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(r.Header.Values("Content-Type")) == 0 {
-		response.StatusCode = http.StatusBadRequest
-		response.Message = "Bad request - Content-type is not set"
-		return
-	}
+	// if len(r.Header.Values("Content-Type")) == 0 {
+	// 	response.StatusCode = http.StatusBadRequest
+	// 	response.Message = "Bad request - Content-type is not set"
+	// 	return
+	// }
 
-	if r.Header.Values("Content-Type")[0] != "application/json" {
-		response.StatusCode = http.StatusUnsupportedMediaType
-		response.Message = http.StatusText(http.StatusUnsupportedMediaType)
-		return
-	}
+	// if r.Header.Values("Content-Type")[0] != "application/json" {
+	// 	response.StatusCode = http.StatusUnsupportedMediaType
+	// 	response.Message = http.StatusText(http.StatusUnsupportedMediaType)
+	// 	return
+	// }
 
 	response.StatusCode = http.StatusBadRequest
 

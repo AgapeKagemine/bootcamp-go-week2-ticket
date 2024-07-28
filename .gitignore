@@ -42,3 +42,4 @@ ionide
 
 # tmp folder by air
 tmp/*
+cmd/result.txt

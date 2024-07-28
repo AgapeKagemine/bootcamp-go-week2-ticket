@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gotik/internal/domain"
+	"sync"
 	"time"
 )
 
@@ -12,6 +13,9 @@ type BuyTicket interface {
 }
 
 func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.TransactionDetail, err error) {
+	mtx := &sync.Mutex{}
+	mtx.Lock()
+	defer mtx.Unlock()
 	request := ctx.Value(domain.Start("request")).(*domain.EventBuyTicket)
 
 	history = domain.TransactionDetail{
