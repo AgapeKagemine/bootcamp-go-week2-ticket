@@ -6,10 +6,45 @@ import (
 	"sync"
 	"time"
 
+	eventHandler "gotik/internal/handler/event"
 	"gotik/internal/provider/routes"
+	eventRepository "gotik/internal/repository/event"
+	eventUsecase "gotik/internal/usecase/event"
+
+	ticketHandler "gotik/internal/handler/ticket"
+	ticketRepository "gotik/internal/repository/ticket"
+	ticketUsecase "gotik/internal/usecase/ticket"
+
+	tdHandler "gotik/internal/handler/transactiondetail"
+	tdRepository "gotik/internal/repository/transactiondetail"
+	tdUsecase "gotik/internal/usecase/transactiondetail"
+
+	userHandler "gotik/internal/handler/user"
+	userRepository "gotik/internal/repository/user"
+	userUsecase "gotik/internal/usecase/user"
 
 	"github.com/rs/zerolog/log"
 )
+
+func autowired() (eventH eventHandler.EventHandler, ticketH ticketHandler.TicketHandler, tdH tdHandler.TransactionDetailHandler, userH userHandler.UserHandler) {
+	ticketRepo := ticketRepository.NewTicketRepository()
+	ticketUsecase := ticketUsecase.NewTicketUsecase(ticketRepo)
+	ticketH = ticketHandler.NewTicketHandler(ticketUsecase)
+
+	userRepo := userRepository.NewUserRepository()
+	userUsecase := userUsecase.NewUserUsecase(userRepo)
+	userH = userHandler.NewUserHandler(userUsecase)
+
+	tdRepo := tdRepository.NewTransactionDetailRepository()
+	tdUsecase := tdUsecase.NewTransactionDetailUsecase(tdRepo, userRepo)
+	tdH = tdHandler.NewTransactionDetailHandler(tdUsecase)
+
+	eventRepo := eventRepository.NewEventRepository()
+	eventUsecase := eventUsecase.NewEventUsecase(eventRepo, userRepo, tdRepo)
+	eventH = eventHandler.NewEventHandler(eventUsecase)
+
+	return
+}
 
 // Graceful Shutdown: https://medium.com/@dsilverdi/graceful-shutdown-in-go-a-polite-way-to-end-programs-6af16e025549
 // Function to start the HTTP Server, with context
@@ -24,10 +59,12 @@ func StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 		w.Write([]byte("Hello World"))
 	})
 
-	mux.Handle("/api/user/", routes.MuxUser())
-	mux.Handle("/api/event/", routes.MuxEvent())
-	mux.Handle("/api/ticket/", routes.MuxTicket())
-	mux.Handle("/api/history/", routes.MuxTransactionDetail())
+	eventH, ticketH, tdH, userH := autowired()
+
+	mux.Handle("/api/user/", routes.MuxUser(userH))
+	mux.Handle("/api/event/", routes.MuxEvent(eventH))
+	mux.Handle("/api/ticket/", routes.MuxTicket(ticketH))
+	mux.Handle("/api/history/", routes.MuxTransactionDetail(tdH))
 
 	server := &http.Server{
 		Addr:    "127.0.0.1:8080",

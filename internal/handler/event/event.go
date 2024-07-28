@@ -11,6 +11,7 @@ type EventHandler interface {
 	contract.Save
 	contract.Update
 	contract.DeleteById
+	BuyTicket
 }
 
 type EventHandlerImpl struct {

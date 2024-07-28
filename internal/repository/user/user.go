@@ -27,3 +27,7 @@ func NewUserRepository() UserRepository[context.Context, domain.User] {
 		Mutex: &sync.Mutex{},
 	}
 }
+
+func (repo *UserRepositoryImpl) Get() UserRepositoryImpl {
+	return *repo
+}

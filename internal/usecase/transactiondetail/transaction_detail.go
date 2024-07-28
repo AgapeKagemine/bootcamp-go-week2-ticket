@@ -5,6 +5,7 @@ import (
 
 	"gotik/internal/domain"
 	"gotik/internal/repository/transactiondetail"
+	"gotik/internal/repository/user"
 )
 
 type TransactionDetailUsecase interface {
@@ -12,11 +13,13 @@ type TransactionDetailUsecase interface {
 }
 
 type TransactionDetailUsecaseImpl struct {
-	repo transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]
+	tdRepo   transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]
+	userRepo user.UserRepository[context.Context, domain.User]
 }
 
-func NewTransactionDetailUsecase(repo transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]) TransactionDetailUsecase {
+func NewTransactionDetailUsecase(tdRepo transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail], userRepo user.UserRepository[context.Context, domain.User]) TransactionDetailUsecase {
 	return &TransactionDetailUsecaseImpl{
-		repo: repo,
+		tdRepo:   tdRepo,
+		userRepo: userRepo,
 	}
 }

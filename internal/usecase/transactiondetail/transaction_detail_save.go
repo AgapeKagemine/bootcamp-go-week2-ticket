@@ -8,5 +8,5 @@ import (
 
 // Save implements TransactionDetailUsecase.
 func (uc *TransactionDetailUsecaseImpl) Save(ctx context.Context, td *domain.TransactionDetail) error {
-	return uc.repo.Save(ctx, td)
+	return uc.tdRepo.Save(ctx, td)
 }

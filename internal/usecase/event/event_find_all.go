@@ -8,7 +8,7 @@ import (
 
 // FindAll implements EventUsecase.
 func (uc *EventUsecaseImpl) FindAll(ctx context.Context) (events []domain.Event, err error) {
-	events, err = uc.repo.FindAll(ctx)
+	events, err = uc.eventRepo.FindAll(ctx)
 	if err != nil {
 		return make([]domain.Event, 0), err
 	}

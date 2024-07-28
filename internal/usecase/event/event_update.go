@@ -8,5 +8,5 @@ import (
 
 // Update implements EventUsecase.
 func (uc *EventUsecaseImpl) Update(ctx context.Context, event *domain.Event) error {
-	return uc.repo.Update(ctx, event)
+	return uc.eventRepo.Update(ctx, event)
 }

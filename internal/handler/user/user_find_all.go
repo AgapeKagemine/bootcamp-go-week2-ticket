@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -29,7 +30,7 @@ func (h *UserHandlerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		r.Body.Close()
 		cancel()
-		log.Info().Uint("httpStatus", response.StatusCode).Str("statusDesc", response.Message).Str("processTime", time.Now().Local().Sub(ctx.Value(domain.Start("start")).(time.Time)).String()).Msg("SAVE -")
+		log.Info().Uint("httpStatus", response.StatusCode).Str("statusDesc", response.Message).Str("processTime", time.Now().Local().Sub(ctx.Value(domain.Start("start")).(time.Time)).String()).Msg(fmt.Sprintf("USER FIND ALL - %s", http.StatusText(int(response.StatusCode))))
 	}()
 
 	if r.Method != http.MethodGet {

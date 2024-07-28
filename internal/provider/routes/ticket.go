@@ -5,19 +5,13 @@ import (
 	"net/http"
 
 	"gotik/internal/domain"
-	ticketHandler "gotik/internal/handler/ticket"
-	ticketRepository "gotik/internal/repository/ticket"
-	ticketUsecase "gotik/internal/usecase/ticket"
+	"gotik/internal/handler/ticket"
 
 	"github.com/rs/zerolog/log"
 )
 
-func MuxTicket() http.Handler {
+func MuxTicket(h ticket.TicketHandler) http.Handler {
 	mux := http.NewServeMux()
-
-	repo := ticketRepository.NewTicketRepository()
-	uc := ticketUsecase.NewTicketUsecase(repo)
-	_ = ticketHandler.NewTicketHandler(uc)
 
 	// List Ticket
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
