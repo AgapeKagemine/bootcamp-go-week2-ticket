@@ -2,10 +2,11 @@ package ticket
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
-	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"gotik/internal/repository/contract"
 )
 
 type TicketRepository[C context.Context, T domain.Ticket] interface {
@@ -15,13 +16,15 @@ type TicketRepository[C context.Context, T domain.Ticket] interface {
 }
 
 type TicketRepositoryImpl struct {
-	db map[int]domain.Ticket
+	db    *sql.DB
+	dbMap map[int]domain.Ticket
 	*sync.Mutex
 }
 
-func NewTicketRepository() TicketRepository[context.Context, domain.Ticket] {
+func NewTicketRepository(db *sql.DB) TicketRepository[context.Context, domain.Ticket] {
 	return &TicketRepositoryImpl{
-		db:    make(map[int]domain.Ticket),
+		db:    db,
+		dbMap: make(map[int]domain.Ticket),
 		Mutex: &sync.Mutex{},
 	}
 }

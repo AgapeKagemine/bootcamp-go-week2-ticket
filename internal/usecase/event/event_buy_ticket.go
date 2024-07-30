@@ -30,7 +30,8 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.Trans
 		if err != nil {
 			history.Status = "Failed"
 		}
-		return history, uc.tdRepo.Save(ctx, &history)
+		history, err := uc.tdRepo.Save(ctx, &history)
+		return history, err
 	}()
 
 	user, err := uc.userRepo.FindById(ctx, int(*request.UserId))
@@ -83,12 +84,12 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.Trans
 		}
 	}
 
-	err = uc.userRepo.Update(ctx, &user)
+	user, err = uc.userRepo.Update(ctx, &user)
 	if err != nil {
 		return history, err
 	}
 
-	err = uc.eventRepo.Update(ctx, &event)
+	event, err = uc.eventRepo.Update(ctx, &event)
 	if err != nil {
 		return history, err
 	}

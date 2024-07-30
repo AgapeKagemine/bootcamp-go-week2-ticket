@@ -40,7 +40,8 @@ func (h *EventHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.uc.Save(ctx, &domain.Event{})
+	event, err := h.uc.Save(ctx, &domain.Event{})
+	response.Payload = event
 
 	response.StatusCode = http.StatusOK
 

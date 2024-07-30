@@ -13,11 +13,11 @@ func (repo *TransactionDetailRepositoryImpl) FindAll(ctx context.Context) (tds [
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if util.IsEmpty(repo.db) {
+	if util.IsEmpty(repo.dbMap) {
 		return nil, errors.New("no transaction detail found")
 	}
 
-	for _, td := range repo.db {
+	for _, td := range repo.dbMap {
 		tds = append(tds, td)
 	}
 

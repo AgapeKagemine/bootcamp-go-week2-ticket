@@ -1,7 +1,9 @@
 package ticket
 
 import (
-	contract "gotik/internal/handler/contract/http"
+	"context"
+	"gotik/internal/domain"
+	"gotik/internal/handler/contract"
 	"gotik/internal/usecase/ticket"
 )
 
@@ -12,10 +14,10 @@ type TicketHandler interface {
 }
 
 type TicketHandlerImpl struct {
-	uc ticket.TicketUsecase
+	uc ticket.TicketUsecase[context.Context, domain.Ticket]
 }
 
-func NewTicketHandler(uc ticket.TicketUsecase) TicketHandler {
+func NewTicketHandler(uc ticket.TicketUsecase[context.Context, domain.Ticket]) TicketHandler {
 	return &TicketHandlerImpl{
 		uc: uc,
 	}

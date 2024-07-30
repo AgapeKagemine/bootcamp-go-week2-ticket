@@ -2,10 +2,11 @@ package event
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
-	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"gotik/internal/repository/contract"
 )
 
 type EventRepository[C context.Context, T domain.Event] interface {
@@ -17,13 +18,15 @@ type EventRepository[C context.Context, T domain.Event] interface {
 }
 
 type EventRepositoryImpl struct {
-	db map[int]domain.Event
+	db    *sql.DB
+	dbMap map[int]domain.Event
 	*sync.Mutex
 }
 
-func NewEventRepository() EventRepository[context.Context, domain.Event] {
+func NewEventRepository(db *sql.DB) EventRepository[context.Context, domain.Event] {
 	return &EventRepositoryImpl{
-		db:    make(map[int]domain.Event),
+		db:    db,
+		dbMap: make(map[int]domain.Event),
 		Mutex: &sync.Mutex{},
 	}
 }

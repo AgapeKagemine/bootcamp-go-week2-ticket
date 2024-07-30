@@ -8,14 +8,14 @@ import (
 )
 
 // Save implements EventUsecase.
-func (uc *EventUsecaseImpl) Save(ctx context.Context, event *domain.Event) (err error) {
-	for _, e := range *populateEvent() {
-		err = uc.eventRepo.Save(ctx, &e)
+func (uc *EventUsecaseImpl) Save(ctx context.Context, event *domain.Event) (e domain.Event, err error) {
+	for _, event := range *populateEvent() {
+		e, err = uc.eventRepo.Save(ctx, &event)
 		if err != nil {
-			return err
+			return domain.Event{}, err
 		}
 	}
-	return nil
+	return e, nil
 }
 
 func populateEvent() *[]domain.Event {

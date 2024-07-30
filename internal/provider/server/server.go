@@ -2,11 +2,13 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"sync"
 	"time"
 
 	eventHandler "gotik/internal/handler/event"
+	"gotik/internal/provider/database"
 	"gotik/internal/provider/routes"
 	eventRepository "gotik/internal/repository/event"
 	eventUsecase "gotik/internal/usecase/event"
@@ -26,20 +28,20 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func autowired() (eventH eventHandler.EventHandler, ticketH ticketHandler.TicketHandler, tdH tdHandler.TransactionDetailHandler, userH userHandler.UserHandler) {
-	ticketRepo := ticketRepository.NewTicketRepository()
+func autowired(db *sql.DB) (eventH eventHandler.EventHandler, ticketH ticketHandler.TicketHandler, tdH tdHandler.TransactionDetailHandler, userH userHandler.UserHandler) {
+	ticketRepo := ticketRepository.NewTicketRepository(db)
 	ticketUsecase := ticketUsecase.NewTicketUsecase(ticketRepo)
 	ticketH = ticketHandler.NewTicketHandler(ticketUsecase)
 
-	userRepo := userRepository.NewUserRepository()
+	userRepo := userRepository.NewUserRepository(db)
 	userUsecase := userUsecase.NewUserUsecase(userRepo)
 	userH = userHandler.NewUserHandler(userUsecase)
 
-	tdRepo := tdRepository.NewTransactionDetailRepository()
+	tdRepo := tdRepository.NewTransactionDetailRepository(db)
 	tdUsecase := tdUsecase.NewTransactionDetailUsecase(tdRepo, userRepo)
 	tdH = tdHandler.NewTransactionDetailHandler(tdUsecase)
 
-	eventRepo := eventRepository.NewEventRepository()
+	eventRepo := eventRepository.NewEventRepository(db)
 	eventUsecase := eventUsecase.NewEventUsecase(eventRepo, userRepo, tdRepo)
 	eventH = eventHandler.NewEventHandler(eventUsecase)
 
@@ -59,7 +61,12 @@ func StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 		w.Write([]byte("Hello World"))
 	})
 
-	eventH, ticketH, tdH, userH := autowired()
+	db, err := database.NewDB()
+	if err != nil {
+		log.Error().Err(err).Msg("Error connecting to database")
+	}
+
+	eventH, ticketH, tdH, userH := autowired(db)
 
 	mux.Handle("/api/user/", routes.MuxUser(userH))
 	mux.Handle("/api/event/", routes.MuxEvent(eventH))

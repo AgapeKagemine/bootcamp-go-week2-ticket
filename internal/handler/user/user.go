@@ -1,7 +1,9 @@
 package user
 
 import (
-	contract "gotik/internal/handler/contract/http"
+	"context"
+	"gotik/internal/domain"
+	"gotik/internal/handler/contract"
 	"gotik/internal/usecase/user"
 )
 
@@ -14,10 +16,10 @@ type UserHandler interface {
 }
 
 type UserHandlerImpl struct {
-	uc user.UserUsecase
+	uc user.UserUsecase[context.Context, domain.User]
 }
 
-func NewUserHandler(uc user.UserUsecase) UserHandler {
+func NewUserHandler(uc user.UserUsecase[context.Context, domain.User]) UserHandler {
 	return &UserHandlerImpl{
 		uc: uc,
 	}

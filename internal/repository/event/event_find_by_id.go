@@ -13,9 +13,9 @@ func (repo *EventRepositoryImpl) FindById(ctx context.Context, id int) (event do
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if !util.IsExist(repo.db, id) {
+	if !util.IsExist(repo.dbMap, id) {
 		return domain.Event{}, errors.New("event not found")
 	}
 
-	return repo.db[id], nil
+	return repo.dbMap[id], nil
 }

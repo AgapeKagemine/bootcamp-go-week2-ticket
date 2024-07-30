@@ -1,7 +1,9 @@
 package event
 
 import (
-	contract "gotik/internal/handler/contract/http"
+	"context"
+	"gotik/internal/domain"
+	"gotik/internal/handler/contract"
 	"gotik/internal/usecase/event"
 )
 
@@ -15,10 +17,10 @@ type EventHandler interface {
 }
 
 type EventHandlerImpl struct {
-	uc event.EventUsecase
+	uc event.EventUsecase[context.Context, domain.Event]
 }
 
-func NewEventHandler(uc event.EventUsecase) EventHandler {
+func NewEventHandler(uc event.EventUsecase[context.Context, domain.Event]) EventHandler {
 	return &EventHandlerImpl{
 		uc: uc,
 	}

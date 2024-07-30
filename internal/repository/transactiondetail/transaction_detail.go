@@ -2,10 +2,11 @@ package transactiondetail
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
-	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"gotik/internal/repository/contract"
 )
 
 type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] interface {
@@ -15,13 +16,15 @@ type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] 
 }
 
 type TransactionDetailRepositoryImpl struct {
-	db map[int]domain.TransactionDetail
+	db    *sql.DB
+	dbMap map[int]domain.TransactionDetail
 	*sync.Mutex
 }
 
-func NewTransactionDetailRepository() TransactionDetailRepository[context.Context, domain.TransactionDetail] {
+func NewTransactionDetailRepository(db *sql.DB) TransactionDetailRepository[context.Context, domain.TransactionDetail] {
 	return &TransactionDetailRepositoryImpl{
-		db:    make(map[int]domain.TransactionDetail),
+		db:    db,
+		dbMap: make(map[int]domain.TransactionDetail),
 		Mutex: &sync.Mutex{},
 	}
 }

@@ -2,10 +2,11 @@ package user
 
 import (
 	"context"
+	"database/sql"
 	"sync"
 
-	"gotik/internal/contract"
 	"gotik/internal/domain"
+	"gotik/internal/repository/contract"
 )
 
 type UserRepository[C context.Context, T domain.User] interface {
@@ -17,13 +18,15 @@ type UserRepository[C context.Context, T domain.User] interface {
 }
 
 type UserRepositoryImpl struct {
-	db map[int]domain.User
+	db *sql.DB
+	// dbMap map[int]domain.User
 	*sync.Mutex
 }
 
-func NewUserRepository() UserRepository[context.Context, domain.User] {
+func NewUserRepository(db *sql.DB) UserRepository[context.Context, domain.User] {
 	return &UserRepositoryImpl{
-		db:    make(map[int]domain.User),
+		db: db,
+		// dbMap: make(map[int]domain.User),
 		Mutex: &sync.Mutex{},
 	}
 }

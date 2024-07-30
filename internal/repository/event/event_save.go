@@ -9,16 +9,16 @@ import (
 )
 
 // Save implements EventRepository.
-func (repo *EventRepositoryImpl) Save(ctx context.Context, event *domain.Event) error {
+func (repo *EventRepositoryImpl) Save(ctx context.Context, event *domain.Event) (domain.Event, error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if util.IsExist(repo.db, event.ID) {
-		return errors.New("event already exists")
+	if util.IsExist(repo.dbMap, event.ID) {
+		return domain.Event{}, errors.New("event already exists")
 	}
 
-	event.ID = repo.db[len(repo.db)].ID + 1
-	repo.db[event.ID] = *event
+	event.ID = repo.dbMap[len(repo.dbMap)].ID + 1
+	repo.dbMap[event.ID] = *event
 
-	return nil
+	return domain.Event{}, nil
 }

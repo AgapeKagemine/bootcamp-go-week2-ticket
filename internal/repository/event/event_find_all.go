@@ -13,11 +13,11 @@ func (repo *EventRepositoryImpl) FindAll(ctx context.Context) (events []domain.E
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if util.IsEmpty(repo.db) {
+	if util.IsEmpty(repo.dbMap) {
 		return nil, errors.New("no event found")
 	}
 
-	for _, event := range repo.db {
+	for _, event := range repo.dbMap {
 		events = append(events, event)
 	}
 

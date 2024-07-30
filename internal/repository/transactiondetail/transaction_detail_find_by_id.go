@@ -13,9 +13,9 @@ func (repo *TransactionDetailRepositoryImpl) FindById(ctx context.Context, id in
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if !util.IsExist(repo.db, id) {
+	if !util.IsExist(repo.dbMap, id) {
 		return domain.TransactionDetail{}, errors.New("transaction detail not found")
 	}
 
-	return repo.db[id], nil
+	return repo.dbMap[id], nil
 }

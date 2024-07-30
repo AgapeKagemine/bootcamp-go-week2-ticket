@@ -28,7 +28,7 @@ func main() {
 	// Craeting a *sync.Waitgroup
 	wg := &sync.WaitGroup{}
 
-	// Wait groupt counter + 1 for the http server
+	// Wait group counter + 1 for the http server
 	wg.Add(1)
 
 	// starting the HTTP server

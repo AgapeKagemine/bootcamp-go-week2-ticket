@@ -65,7 +65,7 @@ func (h *UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	defer func() { response.Payload = request }()
+	response.Payload = request
 
 	if request.Username == nil || *request.Username == "" || len(*request.Username) < 2 {
 		response.Message = "Username is required and/or less than 2 characters"
@@ -87,7 +87,9 @@ func (h *UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.uc.Save(ctx, &request)
+	event, err := h.uc.Save(ctx, &request)
+	response.Payload = event
+
 	if err != nil {
 		response.StatusCode = http.StatusInternalServerError
 		response.Message = err.Error()

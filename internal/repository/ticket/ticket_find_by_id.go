@@ -13,9 +13,9 @@ func (repo *TicketRepositoryImpl) FindById(ctx context.Context, id int) (ticket 
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if !util.IsExist(repo.db, id) {
+	if !util.IsExist(repo.dbMap, id) {
 		return domain.Ticket{}, errors.New("ticket not found")
 	}
 
-	return repo.db[id], nil
+	return repo.dbMap[id], nil
 }

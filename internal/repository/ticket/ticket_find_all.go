@@ -13,11 +13,11 @@ func (repo *TicketRepositoryImpl) FindAll(ctx context.Context) (tickets []domain
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if util.IsEmpty(repo.db) {
+	if util.IsEmpty(repo.dbMap) {
 		return nil, errors.New("no ticket found")
 	}
 
-	for _, ticket := range repo.db {
+	for _, ticket := range repo.dbMap {
 		tickets = append(tickets, ticket)
 	}
 
