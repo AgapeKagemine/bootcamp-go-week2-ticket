@@ -9,7 +9,7 @@ import (
 func MuxUser(h userHandler.UserHandler) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/list", h.FindAll)
+	mux.HandleFunc("/", h.FindAll)
 	mux.HandleFunc("/register", h.Save)
 
 	return http.StripPrefix("/api/user", mux)
