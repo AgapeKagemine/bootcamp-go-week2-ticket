@@ -2,22 +2,63 @@ package event
 
 import (
 	"context"
-	"errors"
 
 	"gotik/internal/domain"
-	"gotik/internal/util"
 )
 
+const update = `
+UPDATE
+    events
+SET
+    name = $2,
+    date = $3,
+    description = $4,
+    location = $5
+WHERE 
+    id = $1
+RETURNING
+    id, name, date, description, location
+`
+
 // Update implements EventRepository.
-func (repo *EventRepositoryImpl) Update(ctx context.Context, event *domain.Event) (domain.Event, error) {
+func (repo *EventRepositoryImpl) Update(ctx context.Context, e *domain.Event) (event domain.Event, err error) {
 	repo.Mutex.Lock()
 	defer repo.Mutex.Unlock()
 
-	if !util.IsExist(repo.dbMap, event.ID) {
-		return domain.Event{}, errors.New("event not found")
+	// if !util.IsExist(repo.dbMap, event.ID) {
+	// 	return domain.Event{}, errors.New("event not found")
+	// }
+
+	// repo.dbMap[event.ID] = *event
+
+	updateStmt, err := repo.db.PrepareContext(ctx, update)
+	if err != nil {
+		return domain.Event{}, err
 	}
 
-	repo.dbMap[event.ID] = *event
+	tx, err := repo.db.BeginTx(ctx, nil)
+	if err != nil {
+		return domain.Event{}, err
+	}
 
-	return domain.Event{}, nil
+	row := tx.StmtContext(ctx, updateStmt).QueryRowContext(ctx, e.ID, e.Name, e.Description, e.Location)
+	err = row.Scan(
+		&e.ID,
+		&e.Name,
+		&e.Date,
+		&e.Description,
+		&e.Location,
+	)
+
+	if err != nil {
+		err = tx.Rollback()
+		return domain.Event{}, err
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return domain.Event{}, err
+	}
+
+	return event, nil
 }

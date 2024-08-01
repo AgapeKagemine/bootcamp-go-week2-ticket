@@ -34,13 +34,18 @@ func (repo *UserRepositoryImpl) FindById(ctx context.Context, id int) (user doma
 		return domain.User{}, err
 	}
 
-	err = tx.StmtContext(ctx, findByIdStmt).QueryRowContext(ctx, id).Scan(
+	row := tx.StmtContext(ctx, findByIdStmt).QueryRowContext(ctx, id)
+	err = row.Scan(
 		&user.ID,
 		&user.Username,
 		&user.Phone,
 		&user.Email,
 		&user.Balance,
 	)
+
+	if err != nil {
+		return domain.User{}, err
+	}
 
 	return user, nil
 }

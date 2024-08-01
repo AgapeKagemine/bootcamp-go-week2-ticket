@@ -32,7 +32,13 @@ func (repo *UserRepositoryImpl) DeleteById(ctx context.Context, id int) error {
 		return err
 	}
 
-	_, err = tx.StmtContext(ctx, deleteByIdStmt).ExecContext(ctx, deleteByIdStmt, deleteById, id)
+	_, err = tx.StmtContext(ctx, deleteByIdStmt).ExecContext(ctx, id)
+	if err != nil {
+		err = tx.Rollback()
+		return err
+	}
+
+	err = tx.Commit()
 	if err != nil {
 		return err
 	}

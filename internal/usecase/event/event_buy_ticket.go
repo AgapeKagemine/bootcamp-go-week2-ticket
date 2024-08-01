@@ -3,9 +3,10 @@ package event
 import (
 	"context"
 	"fmt"
-	"gotik/internal/domain"
 	"sync"
 	"time"
+
+	"gotik/internal/domain"
 )
 
 type BuyTicket interface {
@@ -51,7 +52,7 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.Trans
 	for _, req := range *request.Ticket {
 		for _, ticket := range event.Ticket {
 			if ticket.ID == int(*req.TicketId) {
-				history.TotalPayment += ticket.Type.Price * float64(*req.Quantity)
+				history.TotalPayment += ticket.Price * float64(*req.Quantity)
 				break
 			}
 		}
@@ -68,7 +69,7 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.Trans
 		for i, ticket := range event.Ticket {
 			if ticket.ID == int(*req.TicketId) {
 				if ticket.Stock < *req.TicketId {
-					return history, fmt.Errorf("%s ticket(s) left: %d", ticket.Type.Type, ticket.Stock)
+					return history, fmt.Errorf("%s ticket(s) left: %d", ticket.Type, ticket.Stock)
 				}
 
 				event.Ticket[i].Stock -= *req.Quantity

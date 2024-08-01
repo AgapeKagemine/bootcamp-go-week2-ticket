@@ -36,7 +36,7 @@ func (repo *UserRepositoryImpl) FindAll(ctx context.Context) (users []domain.Use
 		return nil, err
 	}
 
-	rows, err := tx.StmtContext(ctx, findAllStmt).QueryContext(ctx, findAll)
+	rows, err := tx.StmtContext(ctx, findAllStmt).QueryContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -44,21 +44,20 @@ func (repo *UserRepositoryImpl) FindAll(ctx context.Context) (users []domain.Use
 	defer rows.Close()
 
 	for rows.Next() {
-		var i domain.User
-
+		var user domain.User
 		err = rows.Scan(
-			&i.ID,
-			&i.Username,
-			&i.Phone,
-			&i.Email,
-			&i.Balance,
+			&user.ID,
+			&user.Username,
+			&user.Phone,
+			&user.Email,
+			&user.Balance,
 		)
 
 		if err != nil {
 			return nil, err
 		}
 
-		users = append(users, i)
+		users = append(users, user)
 	}
 
 	if err := rows.Close(); err != nil {

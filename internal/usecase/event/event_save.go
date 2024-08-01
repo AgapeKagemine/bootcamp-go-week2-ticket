@@ -30,18 +30,14 @@ func populateEvent() *[]domain.Event {
 				{
 					ID:    1,
 					Stock: 10,
-					Type: domain.TicketType{
-						Type:  "VIP",
-						Price: 5000,
-					},
+					Type:  "VIP",
+					Price: 5000,
 				},
 				{
 					ID:    2,
 					Stock: 100,
-					Type: domain.TicketType{
-						Type:  "CAT 1",
-						Price: 250,
-					},
+					Type:  "CAT 1",
+					Price: 250,
 				},
 			},
 		},
@@ -55,18 +51,14 @@ func populateEvent() *[]domain.Event {
 				{
 					ID:    1,
 					Stock: 10,
-					Type: domain.TicketType{
-						Type:  "VIP",
-						Price: 5000,
-					},
+					Type:  "VIP",
+					Price: 5000,
 				},
 				{
 					ID:    2,
 					Stock: 100,
-					Type: domain.TicketType{
-						Type:  "CAT 1",
-						Price: 250,
-					},
+					Type:  "CAT 1",
+					Price: 250,
 				},
 			},
 		},

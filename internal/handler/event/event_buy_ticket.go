@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"gotik/internal/domain"
 	"net/http"
 	"time"
+
+	"gotik/internal/domain"
 
 	"github.com/rs/zerolog/log"
 )
@@ -62,7 +63,6 @@ func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
 
 	var request domain.EventBuyTicket
 	err := json.NewDecoder(r.Body).Decode(&request)
-
 	if err != nil {
 		response.Message = "Bad request - Bad JSON format"
 		return

@@ -30,7 +30,3 @@ func NewUserRepository(db *sql.DB) UserRepository[context.Context, domain.User] 
 		Mutex: &sync.Mutex{},
 	}
 }
-
-func (repo *UserRepositoryImpl) Get() UserRepositoryImpl {
-	return *repo
-}

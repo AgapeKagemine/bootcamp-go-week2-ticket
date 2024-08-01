@@ -16,15 +16,15 @@ type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] 
 }
 
 type TransactionDetailRepositoryImpl struct {
-	db    *sql.DB
-	dbMap map[int]domain.TransactionDetail
+	db *sql.DB
+	// dbMap map[int]domain.TransactionDetail
 	*sync.Mutex
 }
 
 func NewTransactionDetailRepository(db *sql.DB) TransactionDetailRepository[context.Context, domain.TransactionDetail] {
 	return &TransactionDetailRepositoryImpl{
-		db:    db,
-		dbMap: make(map[int]domain.TransactionDetail),
+		db: db,
+		// dbMap: make(map[int]domain.TransactionDetail),
 		Mutex: &sync.Mutex{},
 	}
 }

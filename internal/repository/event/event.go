@@ -18,15 +18,15 @@ type EventRepository[C context.Context, T domain.Event] interface {
 }
 
 type EventRepositoryImpl struct {
-	db    *sql.DB
-	dbMap map[int]domain.Event
+	db *sql.DB
+	// dbMap map[int]domain.Event
 	*sync.Mutex
 }
 
 func NewEventRepository(db *sql.DB) EventRepository[context.Context, domain.Event] {
 	return &EventRepositoryImpl{
-		db:    db,
-		dbMap: make(map[int]domain.Event),
+		db: db,
+		// dbMap: make(map[int]domain.Event),
 		Mutex: &sync.Mutex{},
 	}
 }
