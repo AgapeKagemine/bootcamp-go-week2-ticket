@@ -1,23 +1,21 @@
 package routes
 
 import (
-	"net/http"
-
 	"gotik/internal/handler/event"
+
+	"github.com/gin-gonic/gin"
 )
 
-func MuxEvent(h event.EventHandler) http.Handler {
-	mux := http.NewServeMux()
+func (r *Routes) Event(rg *gin.RouterGroup, h event.EventHandler) {
+	event := rg.Group("/event")
 
 	// 1. Melihat daftar acara
 	// 4. Melihat Keseluruhan Stok Tiket
-	mux.HandleFunc("/", h.FindAll)
+	event.GET("/", h.FindAll)
 
 	// 2. Memesan Tiket
-	mux.HandleFunc("/buy", h.BuyTicket)
+	event.POST("/buy", h.BuyTicket)
 
 	// Hardcoded
-	mux.HandleFunc("/populate", h.Save)
-
-	return http.StripPrefix("/api/event", mux)
+	event.GET("/populate", h.Save)
 }

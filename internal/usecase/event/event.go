@@ -5,6 +5,7 @@ import (
 
 	"gotik/internal/domain"
 	"gotik/internal/repository/event"
+	"gotik/internal/repository/ticket"
 	"gotik/internal/repository/transactiondetail"
 	"gotik/internal/repository/user"
 	"gotik/internal/usecase/contract"
@@ -20,15 +21,22 @@ type EventUsecase[C context.Context, T domain.Event] interface {
 }
 
 type EventUsecaseImpl struct {
-	eventRepo event.EventRepository[context.Context, domain.Event]
-	userRepo  user.UserRepository[context.Context, domain.User]
-	tdRepo    transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]
+	eventRepo  event.EventRepository[context.Context, domain.Event]
+	userRepo   user.UserRepository[context.Context, domain.User]
+	tdRepo     transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]
+	ticketRepo ticket.TicketRepository[context.Context, domain.Ticket]
 }
 
-func NewEventUsecase(eventRepo event.EventRepository[context.Context, domain.Event], userRepo user.UserRepository[context.Context, domain.User], tdRepo transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail]) EventUsecase[context.Context, domain.Event] {
+func NewEventUsecase(
+	eventRepo event.EventRepository[context.Context, domain.Event],
+	userRepo user.UserRepository[context.Context, domain.User],
+	tdRepo transactiondetail.TransactionDetailRepository[context.Context, domain.TransactionDetail],
+	ticketRepo ticket.TicketRepository[context.Context, domain.Ticket],
+) EventUsecase[context.Context, domain.Event] {
 	return &EventUsecaseImpl{
-		eventRepo: eventRepo,
-		userRepo:  userRepo,
-		tdRepo:    tdRepo,
+		eventRepo:  eventRepo,
+		userRepo:   userRepo,
+		tdRepo:     tdRepo,
+		ticketRepo: ticketRepo,
 	}
 }

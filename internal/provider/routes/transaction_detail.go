@@ -1,17 +1,16 @@
 package routes
 
 import (
-	"net/http"
+	"gotik/internal/handler/transactiondetail"
 
-	tdHandler "gotik/internal/handler/transactiondetail"
+	"github.com/gin-gonic/gin"
 )
 
-func MuxTransactionDetail(h tdHandler.TransactionDetailHandler) http.Handler {
-	mux := http.NewServeMux()
+func (r *Routes) TransactionDetail(rg *gin.RouterGroup, h transactiondetail.TransactionDetailHandler) {
+	td := rg.Group("/history")
 
 	// 3. Melihat pesanan
 	// 5. Melihah keseluruhan pembeli tiket
-	mux.HandleFunc("/", h.FindAll)
-
-	return http.StripPrefix("/api/history", mux)
+	td.GET("/", h.FindAll)
+	td.GET("/all", h.FindAll)
 }

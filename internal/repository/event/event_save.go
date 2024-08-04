@@ -8,9 +8,9 @@ import (
 
 const create = `--
 INSERT INTO
-    events (id, name, date, description, location)
+    events (name, date, description, location)
 VALUES
-    ($1, $2, $3, $4, $5)
+    ($1, $2, $3, $4)
 RETURNING
     id, name, date, description, location
 `
@@ -37,7 +37,7 @@ func (repo *EventRepositoryImpl) Save(ctx context.Context, e *domain.Event) (eve
 		return domain.Event{}, err
 	}
 
-	row := tx.StmtContext(ctx, createStmt).QueryRowContext(ctx, e.ID, e.Name, e.Date, e.Description, e.Location)
+	row := tx.StmtContext(ctx, createStmt).QueryRowContext(ctx, e.Name, e.Date, e.Description, e.Location)
 	err = row.Scan(
 		&event.ID,
 		&event.Name,

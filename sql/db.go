@@ -25,19 +25,19 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	q := Queries{db: db}
 	var err error
 	if q.createStmt, err = db.PrepareContext(ctx, create); err != nil {
-		return nil, fmt.Errorf("error preparing query Create: %w", err)
+		return nil, fmt.Errorf("error preparing query Create: %c.Writer", err)
 	}
 	if q.deleteByIdStmt, err = db.PrepareContext(ctx, deleteById); err != nil {
-		return nil, fmt.Errorf("error preparing query DeleteById: %w", err)
+		return nil, fmt.Errorf("error preparing query DeleteById: %c.Writer", err)
 	}
 	if q.findAllStmt, err = db.PrepareContext(ctx, findAll); err != nil {
-		return nil, fmt.Errorf("error preparing query FindAll: %w", err)
+		return nil, fmt.Errorf("error preparing query FindAll: %c.Writer", err)
 	}
 	if q.findByIdStmt, err = db.PrepareContext(ctx, findById); err != nil {
-		return nil, fmt.Errorf("error preparing query FindById: %w", err)
+		return nil, fmt.Errorf("error preparing query FindById: %c.Writer", err)
 	}
 	if q.updateStmt, err = db.PrepareContext(ctx, update); err != nil {
-		return nil, fmt.Errorf("error preparing query Update: %w", err)
+		return nil, fmt.Errorf("error preparing query Update: %c.Writer", err)
 	}
 	return &q, nil
 }
@@ -46,27 +46,27 @@ func (q *Queries) Close() error {
 	var err error
 	if q.createStmt != nil {
 		if cerr := q.createStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing createStmt: %w", cerr)
+			err = fmt.Errorf("error closing createStmt: %c.Writer", cerr)
 		}
 	}
 	if q.deleteByIdStmt != nil {
 		if cerr := q.deleteByIdStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing deleteByIdStmt: %w", cerr)
+			err = fmt.Errorf("error closing deleteByIdStmt: %c.Writer", cerr)
 		}
 	}
 	if q.findAllStmt != nil {
 		if cerr := q.findAllStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing findAllStmt: %w", cerr)
+			err = fmt.Errorf("error closing findAllStmt: %c.Writer", cerr)
 		}
 	}
 	if q.findByIdStmt != nil {
 		if cerr := q.findByIdStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing findByIdStmt: %w", cerr)
+			err = fmt.Errorf("error closing findByIdStmt: %c.Writer", cerr)
 		}
 	}
 	if q.updateStmt != nil {
 		if cerr := q.updateStmt.Close(); cerr != nil {
-			err = fmt.Errorf("error closing updateStmt: %w", cerr)
+			err = fmt.Errorf("error closing updateStmt: %c.Writer", cerr)
 		}
 	}
 	return err

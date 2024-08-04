@@ -2,80 +2,37 @@ package server
 
 import (
 	"context"
-	"database/sql"
-	"net/http"
-	"sync"
-	"time"
-
-	eventHandler "gotik/internal/handler/event"
-	"gotik/internal/provider/database"
+	"fmt"
 	"gotik/internal/provider/routes"
-	eventRepository "gotik/internal/repository/event"
-	eventUsecase "gotik/internal/usecase/event"
-
-	ticketHandler "gotik/internal/handler/ticket"
-	ticketRepository "gotik/internal/repository/ticket"
-	ticketUsecase "gotik/internal/usecase/ticket"
-
-	tdHandler "gotik/internal/handler/transactiondetail"
-	tdRepository "gotik/internal/repository/transactiondetail"
-	tdUsecase "gotik/internal/usecase/transactiondetail"
-
-	userHandler "gotik/internal/handler/user"
-	userRepository "gotik/internal/repository/user"
-	userUsecase "gotik/internal/usecase/user"
+	"net/http"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
 
-func autowired(db *sql.DB) (eventH eventHandler.EventHandler, ticketH ticketHandler.TicketHandler, tdH tdHandler.TransactionDetailHandler, userH userHandler.UserHandler) {
-	ticketRepo := ticketRepository.NewTicketRepository(db)
-	ticketUsecase := ticketUsecase.NewTicketUsecase(ticketRepo)
-	ticketH = ticketHandler.NewTicketHandler(ticketUsecase)
-
-	userRepo := userRepository.NewUserRepository(db)
-	userUsecase := userUsecase.NewUserUsecase(userRepo)
-	userH = userHandler.NewUserHandler(userUsecase)
-
-	tdRepo := tdRepository.NewTransactionDetailRepository(db)
-	tdUsecase := tdUsecase.NewTransactionDetailUsecase(tdRepo, userRepo)
-	tdH = tdHandler.NewTransactionDetailHandler(tdUsecase)
-
-	eventRepo := eventRepository.NewEventRepository(db)
-	eventUsecase := eventUsecase.NewEventUsecase(eventRepo, userRepo, tdRepo)
-	eventH = eventHandler.NewEventHandler(eventUsecase)
-
-	return
+type ServerConfig struct {
+	Address string
+	Port    uint
 }
 
 // Graceful Shutdown: https://medium.com/@dsilverdi/graceful-shutdown-in-go-a-polite-way-to-end-programs-6af16e025549
 // Function to start the HTTP Server, with context
-func StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
-	defer wg.Done()
+func StartHTTPServer() {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-	mux := http.NewServeMux()
+	router := routes.NewRoutes()
 
-	// Routes
-	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		log.Info().Msg("Hello")
-		w.Write([]byte("Hello World"))
-	})
-
-	db, err := database.NewDB()
-	if err != nil {
-		log.Error().Err(err).Msg("Error connecting to database")
+	serverConfig := ServerConfig{
+		Address: "127.0.0.1",
+		Port:    8080,
 	}
 
-	eventH, ticketH, tdH, userH := autowired(db)
-
-	mux.Handle("/api/user/", routes.MuxUser(userH))
-	mux.Handle("/api/event/", routes.MuxEvent(eventH))
-	mux.Handle("/api/ticket/", routes.MuxTicket(ticketH))
-	mux.Handle("/api/history/", routes.MuxTransactionDetail(tdH))
-
 	server := &http.Server{
-		Addr:    "127.0.0.1:8080",
-		Handler: mux,
+		Addr:    fmt.Sprintf("%s:%d", serverConfig.Address, serverConfig.Port),
+		Handler: router.Server,
 	}
 
 	// The actual starting point for the HTTP server
@@ -91,22 +48,25 @@ func StartHTTPServer(ctx context.Context, wg *sync.WaitGroup) {
 		}
 	}()
 
+	// Listen for Interrupt signal (Ctrl+C or other termination signal)
+	<-ctx.Done()
+
+	// Restore Default Behaviour - https://github.com/gin-gonic/examples/blob/master/graceful-shutdown/graceful-shutdown/notify-with-context/server.go
+	stop()
+	log.Info().Msg("Shutting down server...")
+
 	// If the channel is closed, channel will return error
 	// the context sent from main include a channel to communicate
 	// ctx.Done (channel) is closed if the context is canceled
 	// Checking if the context is canceled
-	if err := ctx.Err(); err != nil {
-		log.Error().Err(err).Msg("Shutting down server...")
+	// Context with 5 seconds timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-		// Context with 5 seconds timeout
-		shutdown_ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-
-		// Shutting down the server, using the context to set the timeout within 5 seconds
-		err := server.Shutdown(shutdown_ctx)
-		if err != nil {
-			log.Error().Err(err).Msg("Error shutting down server")
-		}
+	// Shutting down the server, using the context to set the timeout within 5 seconds
+	err := server.Shutdown(ctx)
+	if err != nil {
+		log.Error().Err(err).Msg("Error shutting down server")
 	}
 
 	log.Error().Msg("HTTP server stopped")

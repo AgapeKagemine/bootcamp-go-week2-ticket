@@ -1,8 +1,8 @@
 package user
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 // FindById implements UserHandler.
-func (h *UserHandlerImpl) FindById(w http.ResponseWriter, r *http.Request) {
-	h.uc.FindById(r.Context(), 1)
+func (h *UserHandlerImpl) FindById(c *gin.Context) {
+	h.uc.FindById(c.Request.Context(), 1)
 }

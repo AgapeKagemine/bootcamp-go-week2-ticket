@@ -1,8 +1,8 @@
 package ticket
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 // FindById implements TicketHandler.
-func (h *TicketHandlerImpl) FindById(w http.ResponseWriter, r *http.Request) {
-	h.uc.FindById(r.Context(), 1)
+func (h *TicketHandlerImpl) FindById(c *gin.Context) {
+	h.uc.FindById(c.Request.Context(), 1)
 }

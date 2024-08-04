@@ -8,11 +8,27 @@ import (
 
 const findById = `
 SELECT
-	id, name, date, description, location
+	e.id,
+	e."name",
+	e."date",
+	e.description,
+	e."location",
+	t.id,
+	t.stock,
+	t."type",
+	t.price 
 FROM
-	events
+	events e
+JOIN 
+	events_tickets et
+	on
+	e.id =  et.event_id
+JOIN
+	tickets t
+	on
+	et.ticket_id = t.id
 WHERE
-	id = $1
+	e.id = $1
 `
 
 // FindById implements EventRepository.
@@ -34,15 +50,35 @@ func (repo *EventRepositoryImpl) FindById(ctx context.Context, id int) (event do
 		return domain.Event{}, err
 	}
 
-	row := tx.StmtContext(ctx, findByIdStmt).QueryRowContext(ctx, id)
+	rows, err := tx.StmtContext(ctx, findByIdStmt).QueryContext(ctx, id)
+	if err != nil {
+		return domain.Event{}, err
+	}
 
-	err = row.Scan(
-		&event.ID,
-		&event.Name,
-		&event.Date,
-		&event.Description,
-	)
+	event.Ticket = []domain.Ticket{}
 
+	for rows.Next() {
+		var ticket domain.Ticket
+		err = rows.Scan(
+			&event.ID,
+			&event.Name,
+			&event.Date,
+			&event.Description,
+			&event.Location,
+			&ticket.ID,
+			&ticket.Stock,
+			&ticket.Type,
+			&ticket.Price,
+		)
+		event.Ticket = append(event.Ticket, ticket)
+	}
+
+	if err != nil {
+		tx.Rollback()
+		return domain.Event{}, err
+	}
+
+	err = rows.Close()
 	if err != nil {
 		return domain.Event{}, err
 	}

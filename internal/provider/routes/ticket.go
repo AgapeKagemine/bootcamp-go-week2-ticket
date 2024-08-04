@@ -1,22 +1,22 @@
 package routes
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"gotik/internal/domain"
 	"gotik/internal/handler/ticket"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
-func MuxTicket(h ticket.TicketHandler) http.Handler {
-	mux := http.NewServeMux()
+func (r *Routes) Ticket(rg *gin.RouterGroup, h ticket.TicketHandler) {
+	ticket := rg.Group("/ticket")
 
-	// List Ticket
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusNotFound)
+	// Just No
+	ticket.GET("/", func(c *gin.Context) {
+		c.Writer.Header().Set("Content-Type", "application/json")
+		c.Writer.WriteHeader(http.StatusNotFound)
 
 		response := domain.ResponseBody{
 			StatusCode: http.StatusNotFound,
@@ -26,8 +26,6 @@ func MuxTicket(h ticket.TicketHandler) http.Handler {
 
 		log.Error().Msg("TICKET BEING HIT")
 
-		json.NewEncoder(w).Encode(response)
+		c.JSON(http.StatusNotFound, response)
 	})
-
-	return http.StripPrefix("/api/ticket", mux)
 }

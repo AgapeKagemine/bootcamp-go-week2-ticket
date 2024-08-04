@@ -1,7 +1,7 @@
 package contract
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 type FindAll interface {
-	FindAll(w http.ResponseWriter, r *http.Request)
+	FindAll(c *gin.Context)
 }

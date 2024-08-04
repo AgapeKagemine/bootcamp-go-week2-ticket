@@ -9,18 +9,19 @@ import (
 
 	"gotik/internal/domain"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 type BuyTicket interface {
-	BuyTicket(w http.ResponseWriter, r *http.Request)
+	BuyTicket(c *gin.Context)
 }
 
-func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
-	c := context.WithValue(r.Context(), domain.Start("start"), time.Now().Local())
-	ct, cancel := context.WithDeadline(c, time.Now().Local().Add(time.Second*30))
+func (h *EventHandlerImpl) BuyTicket(c *gin.Context) {
+	ct := context.WithValue(c.Request.Context(), domain.Start("start"), time.Now().Local())
+	ctx, cancel := context.WithDeadline(ct, time.Now().Local().Add(time.Second*30))
 
-	w.Header().Set("Content-Type", "application/json")
+	c.Writer.Header().Set("Content-Type", "application/json")
 
 	response := &domain.ResponseBody{
 		StatusCode: 0,
@@ -29,26 +30,25 @@ func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		w.WriteHeader(int(response.StatusCode))
-		json.NewEncoder(w).Encode(response)
-		r.Body.Close()
+		c.JSON(int(response.StatusCode), response)
+		c.Request.Body.Close()
 		cancel()
 		log.Info().Uint("httpStatus", response.StatusCode).Str("statusDesc", response.Message).Str("processTime", time.Now().Local().Sub(ct.Value(domain.Start("start")).(time.Time)).String()).Msg(fmt.Sprintf("EVENT BUY TICKET - %s", http.StatusText(int(response.StatusCode))))
 	}()
 
-	if r.Method != http.MethodPost {
+	if c.Request.Method != http.MethodPost {
 		response.StatusCode = http.StatusMethodNotAllowed
 		response.Message = http.StatusText(http.StatusMethodNotAllowed)
 		return
 	}
 
-	// if len(r.Header.Values("Content-Type")) == 0 {
+	// if len(c.Request.Header.Values("Content-Type")) == 0 {
 	// 	response.StatusCode = http.StatusBadRequest
 	// 	response.Message = "Bad request - Content-type is not set"
 	// 	return
 	// }
 
-	// if r.Header.Values("Content-Type")[0] != "application/json" {
+	// if c.Request.Header.Values("Content-Type")[0] != "application/json" {
 	// 	response.StatusCode = http.StatusUnsupportedMediaType
 	// 	response.Message = http.StatusText(http.StatusUnsupportedMediaType)
 	// 	return
@@ -56,13 +56,13 @@ func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
 
 	response.StatusCode = http.StatusBadRequest
 
-	if r.Body == nil {
+	if c.Request.Body == nil {
 		response.Message = "Bad request - Body is empty"
 		return
 	}
 
 	var request domain.EventBuyTicket
-	err := json.NewDecoder(r.Body).Decode(&request)
+	err := json.NewDecoder(c.Request.Body).Decode(&request)
 	if err != nil {
 		response.Message = "Bad request - Bad JSON format"
 		return
@@ -102,9 +102,9 @@ func (h *EventHandlerImpl) BuyTicket(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	ctx := context.WithValue(ct, domain.Start("request"), &request)
+	ctxR := context.WithValue(ctx, domain.Start("request"), &request)
 
-	td, err := h.uc.BuyTicket(ctx)
+	td, err := h.uc.BuyTicket(ctxR)
 
 	response.Payload = td
 

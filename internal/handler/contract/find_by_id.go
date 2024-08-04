@@ -1,7 +1,7 @@
 package contract
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 type FindById interface {
-	FindById(w http.ResponseWriter, r *http.Request)
+	FindById(c *gin.Context)
 }

@@ -1,7 +1,7 @@
 package contract
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 type Save interface {
-	Save(w http.ResponseWriter, r *http.Request)
+	Save(c *gin.Context)
 }

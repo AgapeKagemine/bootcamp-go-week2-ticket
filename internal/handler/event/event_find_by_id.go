@@ -1,8 +1,8 @@
 package event
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 // FindById implements EventHandler.
-func (h *EventHandlerImpl) FindById(w http.ResponseWriter, r *http.Request) {
-	h.uc.FindById(r.Context(), 1)
+func (h *EventHandlerImpl) FindById(c *gin.Context) {
+	h.uc.FindById(c.Request.Context(), 1)
 }

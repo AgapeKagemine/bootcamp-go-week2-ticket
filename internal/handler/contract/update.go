@@ -1,7 +1,7 @@
 package contract
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 type Update interface {
-	Update(w http.ResponseWriter, r *http.Request)
+	Update(c *gin.Context)
 }

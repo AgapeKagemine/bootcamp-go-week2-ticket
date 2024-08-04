@@ -9,15 +9,16 @@ import (
 
 	"gotik/internal/domain"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 // Save implements UserHandler.
-func (h *UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
-	c := context.WithValue(r.Context(), domain.Start("start"), time.Now().Local())
-	ctx, cancel := context.WithDeadline(c, time.Now().Local().Add(time.Second*30))
+func (h *UserHandlerImpl) Save(c *gin.Context) {
+	ct := context.WithValue(c.Request.Context(), domain.Start("start"), time.Now().Local())
+	ctx, cancel := context.WithDeadline(ct, time.Now().Local().Add(time.Second*30))
 
-	w.Header().Set("Content-Type", "application/json")
+	c.Writer.Header().Set("Content-Type", "application/json")
 
 	response := &domain.ResponseBody{
 		StatusCode: 0,
@@ -26,26 +27,25 @@ func (h *UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		w.WriteHeader(int(response.StatusCode))
-		json.NewEncoder(w).Encode(response)
-		r.Body.Close()
+		c.JSON(int(response.StatusCode), response)
+		c.Request.Body.Close()
 		cancel()
 		log.Info().Uint("httpStatus", response.StatusCode).Str("statusDesc", response.Message).Str("processTime", time.Now().Local().Sub(ctx.Value(domain.Start("start")).(time.Time)).String()).Msg(fmt.Sprintf("USER SAVE - %s", http.StatusText(int(response.StatusCode))))
 	}()
 
-	if r.Method != http.MethodPost {
+	if c.Request.Method != http.MethodPost {
 		response.StatusCode = http.StatusMethodNotAllowed
 		response.Message = http.StatusText(http.StatusMethodNotAllowed)
 		return
 	}
 
-	if len(r.Header.Values("Content-Type")) == 0 {
+	if len(c.Request.Header.Values("Content-Type")) == 0 {
 		response.StatusCode = http.StatusBadRequest
 		response.Message = "Bad request - Content-type is not set"
 		return
 	}
 
-	if r.Header.Values("Content-Type")[0] != "application/json" {
+	if c.Request.Header.Values("Content-Type")[0] != "application/json" {
 		response.StatusCode = http.StatusUnsupportedMediaType
 		response.Message = http.StatusText(http.StatusUnsupportedMediaType)
 		return
@@ -53,13 +53,13 @@ func (h *UserHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
 
 	response.StatusCode = http.StatusBadRequest
 
-	if r.Body == nil {
+	if c.Request.Body == nil {
 		response.Message = "Bad request - Body is empty"
 		return
 	}
 
 	var request domain.User
-	err := json.NewDecoder(r.Body).Decode(&request)
+	err := json.NewDecoder(c.Request.Body).Decode(&request)
 	if err != nil {
 		response.Message = "Bad request - Bad JSON format"
 		return

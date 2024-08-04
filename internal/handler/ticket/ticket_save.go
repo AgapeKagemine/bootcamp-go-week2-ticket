@@ -1,12 +1,12 @@
 package ticket
 
 import (
-	"net/http"
-
 	"gotik/internal/domain"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Save implements TicketHandler.
-func (h *TicketHandlerImpl) Save(w http.ResponseWriter, r *http.Request) {
-	h.uc.Save(r.Context(), &domain.Ticket{})
+func (h *TicketHandlerImpl) Save(c *gin.Context) {
+	h.uc.Save(c.Request.Context(), &domain.Ticket{})
 }

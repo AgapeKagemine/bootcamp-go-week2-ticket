@@ -1,8 +1,8 @@
 package user
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 // DeleteById implements UserHanlder.
-func (h *UserHandlerImpl) DeleteById(w http.ResponseWriter, r *http.Request) {
-	h.uc.DeleteById(r.Context(), 1)
+func (h *UserHandlerImpl) DeleteById(c *gin.Context) {
+	h.uc.DeleteById(c.Request.Context(), 1)
 }

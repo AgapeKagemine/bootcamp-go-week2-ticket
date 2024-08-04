@@ -43,11 +43,11 @@ func (repo *EventRepositoryImpl) Update(ctx context.Context, e *domain.Event) (e
 
 	row := tx.StmtContext(ctx, updateStmt).QueryRowContext(ctx, e.ID, e.Name, e.Description, e.Location)
 	err = row.Scan(
-		&e.ID,
-		&e.Name,
-		&e.Date,
-		&e.Description,
-		&e.Location,
+		&event.ID,
+		&event.Name,
+		&event.Date,
+		&event.Description,
+		&event.Location,
 	)
 
 	if err != nil {

@@ -1,12 +1,12 @@
 package event
 
 import (
-	"net/http"
-
 	"gotik/internal/domain"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Update implements EventHandler.
-func (h *EventHandlerImpl) Update(w http.ResponseWriter, r *http.Request) {
-	h.uc.Update(r.Context(), &domain.Event{})
+func (h *EventHandlerImpl) Update(c *gin.Context) {
+	h.uc.Update(c.Request.Context(), &domain.Event{})
 }

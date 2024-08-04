@@ -1,8 +1,8 @@
 package ticket
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 // FindAll implements TicketHandler.
-func (h *TicketHandlerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
-	h.uc.FindAll(r.Context())
+func (h *TicketHandlerImpl) FindAll(c *gin.Context) {
+	h.uc.FindAll(c.Request.Context())
 }

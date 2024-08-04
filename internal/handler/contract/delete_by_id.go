@@ -1,7 +1,7 @@
 package contract
 
-import "net/http"
+import "github.com/gin-gonic/gin"
 
 type DeleteById interface {
-	DeleteById(w http.ResponseWriter, r *http.Request)
+	DeleteById(c *gin.Context)
 }

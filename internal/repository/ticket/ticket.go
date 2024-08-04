@@ -13,6 +13,8 @@ type TicketRepository[C context.Context, T domain.Ticket] interface {
 	contract.FindAll[C, T]
 	contract.FindById[C, T]
 	contract.Save[C, T]
+	contract.Update[C, T]
+	SaveEventTicket(C, int) error
 }
 
 type TicketRepositoryImpl struct {

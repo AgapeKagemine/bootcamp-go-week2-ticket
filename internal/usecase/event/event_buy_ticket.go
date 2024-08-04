@@ -13,38 +13,43 @@ type BuyTicket interface {
 	BuyTicket(context.Context) (domain.TransactionDetail, error)
 }
 
-func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.TransactionDetail, err error) {
+func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (domain.TransactionDetail, error) {
 	mtx := &sync.Mutex{}
 	mtx.Lock()
 	defer mtx.Unlock()
+
+	history := &domain.TransactionDetail{
+		Time: ctx.Value(domain.Start("start")).(time.Time).String(),
+	}
+
 	request := ctx.Value(domain.Start("request")).(*domain.EventBuyTicket)
 
-	history = domain.TransactionDetail{
-		Time:         ctx.Value(domain.Start("start")).(time.Time).String(),
-		Status:       "Pending",
-		TotalPayment: 0,
-		User:         domain.User{},
-		Event:        domain.Event{},
+	if request == nil {
+		return *history, fmt.Errorf("invalid request")
+	}
+
+	history.Time = ctx.Value(domain.Start("start")).(time.Time).String()
+
+	user, err := uc.userRepo.FindById(ctx, int(*request.UserId))
+	if err != nil || user.ID == 0 {
+		history.Status = "Failed"
+		return *history, fmt.Errorf("user with id: %d not found", *request.UserId)
+	}
+
+	event, err := uc.eventRepo.FindById(ctx, int(*request.EventId))
+	if err != nil || event.ID == 0 {
+		history.Status = "Failed"
+		return *history, fmt.Errorf("event with id: %d not found", *request.EventId)
 	}
 
 	defer func() (domain.TransactionDetail, error) {
 		if err != nil {
 			history.Status = "Failed"
 		}
-		history, err := uc.tdRepo.Save(ctx, &history)
+		history, _ := uc.tdRepo.Save(ctx, history)
+		err = uc.tdRepo.SaveTransactionDetailsEventsUsers(ctx, history.ID, event.ID, user.ID)
 		return history, err
 	}()
-
-	user, err := uc.userRepo.FindById(ctx, int(*request.UserId))
-	if err != nil {
-		return history, err
-	}
-	history.User = user
-
-	event, err := uc.eventRepo.FindById(ctx, int(*request.EventId))
-	if err != nil {
-		return history, err
-	}
 
 	history.Event = event
 	history.Event.Ticket = []domain.Ticket{}
@@ -59,42 +64,49 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (history domain.Trans
 	}
 
 	if history.TotalPayment > *user.Balance {
-		return history, fmt.Errorf("user %s with id: %d balance(s) is not enough", *user.Username, user.ID)
+		return *history, fmt.Errorf("user %s with id: %d balance(s) is not enough", *user.Username, user.ID)
 	}
 
 	*user.Balance -= history.TotalPayment
 	history.User = user
 
-	for r, req := range *request.Ticket {
+	for t, req := range *request.Ticket {
 		for i, ticket := range event.Ticket {
-			if ticket.ID == int(*req.TicketId) {
-				if ticket.Stock < *req.TicketId {
-					return history, fmt.Errorf("%s ticket(s) left: %d", ticket.Type, ticket.Stock)
-				}
+			if ticket.Stock < *req.Quantity {
+				return *history, fmt.Errorf("%s ticket(s) left: %d", ticket.Type, ticket.Stock)
+			}
 
-				event.Ticket[i].Stock -= *req.Quantity
+			if ticket.ID == int(*req.TicketId) {
+				event.Ticket[i].Stock = event.Ticket[i].Stock - *req.Quantity
 				history.Event.Ticket = append(history.Event.Ticket, ticket)
-				history.Event.Ticket[r].Stock = *req.Quantity
+				history.Event.Ticket[t].Stock = *req.Quantity
 				break
 			}
 
 			if i == len(event.Ticket)-1 {
-				return history, fmt.Errorf("ticket with %d not found", *req.TicketId)
+				return *history, fmt.Errorf("ticket with %d not found", *req.TicketId)
 			}
 
 		}
 	}
 
-	user, err = uc.userRepo.Update(ctx, &user)
+	_, err = uc.userRepo.Update(ctx, &user)
 	if err != nil {
-		return history, err
+		return *history, err
 	}
 
-	event, err = uc.eventRepo.Update(ctx, &event)
+	_, err = uc.eventRepo.Update(ctx, &event)
 	if err != nil {
-		return history, err
+		return *history, err
+	}
+
+	for _, t := range event.Ticket {
+		_, err := uc.ticketRepo.Update(ctx, &t)
+		if err != nil {
+			return *history, err
+		}
 	}
 
 	history.Status = "Success"
-	return
+	return *history, nil
 }

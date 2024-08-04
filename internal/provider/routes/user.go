@@ -1,16 +1,19 @@
 package routes
 
 import (
-	"net/http"
+	"gotik/internal/handler/user"
 
-	userHandler "gotik/internal/handler/user"
+	"github.com/gin-gonic/gin"
 )
 
-func MuxUser(h userHandler.UserHandler) http.Handler {
-	mux := http.NewServeMux()
+func (r *Routes) User(rg *gin.RouterGroup, h user.UserHandler) {
+	user := rg.Group("/user")
 
-	mux.HandleFunc("/", h.FindAll)
-	mux.HandleFunc("/register", h.Save)
+	user.GET("/", h.FindAll)
+	user.POST("/register", h.Save)
 
-	return http.StripPrefix("/api/user", mux)
+	// TODO: If done with core...
+	// h.DeleteById()
+	// h.FindById()
+	// h.Update()
 }

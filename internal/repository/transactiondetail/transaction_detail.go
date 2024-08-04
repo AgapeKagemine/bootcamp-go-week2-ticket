@@ -13,6 +13,8 @@ type TransactionDetailRepository[C context.Context, T domain.TransactionDetail] 
 	contract.FindAll[C, T]
 	contract.FindById[C, T]
 	contract.Save[C, T]
+	SaveTransactionDetailsEventsUsers(C, int, int, int) error
+	FindAllTrue(C context.Context) ([]T, error)
 }
 
 type TransactionDetailRepositoryImpl struct {

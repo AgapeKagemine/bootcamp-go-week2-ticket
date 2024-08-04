@@ -2,22 +2,22 @@ package transactiondetail
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
 	"gotik/internal/domain"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
 // FindAll implements TransactionDetailHandler.
-func (h *TransactionDetailHandlerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
-	c := context.WithValue(r.Context(), domain.Start("start"), time.Now().Local())
-	ctx, cancel := context.WithDeadline(c, time.Now().Local().Add(time.Second*30))
+func (h *TransactionDetailHandlerImpl) FindAll(c *gin.Context) {
+	ct := context.WithValue(c.Request.Context(), domain.Start("start"), time.Now().Local())
+	ctx, cancel := context.WithDeadline(ct, time.Now().Local().Add(time.Second*30))
 
-	w.Header().Set("Content-Type", "application/json")
+	c.Writer.Header().Set("Content-Type", "application/json")
 
 	response := &domain.ResponseBody{
 		StatusCode: 0,
@@ -26,17 +26,20 @@ func (h *TransactionDetailHandlerImpl) FindAll(w http.ResponseWriter, r *http.Re
 	}
 
 	defer func() {
-		w.WriteHeader(int(response.StatusCode))
-		json.NewEncoder(w).Encode(response)
-		r.Body.Close()
+		c.JSON(int(response.StatusCode), response)
+		c.Request.Body.Close()
 		cancel()
 		log.Info().Uint("httpStatus", response.StatusCode).Str("statusDesc", response.Message).Str("processTime", time.Now().Local().Sub(ctx.Value(domain.Start("start")).(time.Time)).String()).Msg(fmt.Sprintf("TRANSACTION DETAIL FIND ALL - %s", http.StatusText(int(response.StatusCode))))
 	}()
 
-	if r.Method != http.MethodGet {
+	if c.Request.Method != http.MethodGet {
 		response.StatusCode = http.StatusMethodNotAllowed
 		response.Message = http.StatusText(http.StatusMethodNotAllowed)
 		return
+	}
+
+	if c.Request.URL.Path == "/api/history/all" {
+		ctx = context.WithValue(ctx, domain.Start("history"), true)
 	}
 
 	td, err := h.uc.FindAll(ctx)
@@ -44,7 +47,7 @@ func (h *TransactionDetailHandlerImpl) FindAll(w http.ResponseWriter, r *http.Re
 
 	if err != nil && err.Error() != "no transaction detail found" {
 		response.StatusCode = http.StatusInternalServerError
-		response.Message = http.StatusText(http.StatusInternalServerError)
+		response.Message = err.Error()
 		return
 	}
 

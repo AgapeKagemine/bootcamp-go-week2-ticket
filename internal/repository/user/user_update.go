@@ -41,7 +41,7 @@ func (repo *UserRepositoryImpl) Update(ctx context.Context, u *domain.User) (use
 		return domain.User{}, err
 	}
 
-	row := tx.StmtContext(ctx, updateStmt).QueryRowContext(ctx, u.Username, u.Phone, u.Email, u.Balance)
+	row := tx.StmtContext(ctx, updateStmt).QueryRowContext(ctx, u.ID, *u.Username, *u.Phone, *u.Email, *u.Balance)
 	err = row.Scan(
 		&user.ID,
 		&user.Username,
