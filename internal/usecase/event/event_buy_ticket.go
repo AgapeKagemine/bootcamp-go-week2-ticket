@@ -13,7 +13,7 @@ type BuyTicket interface {
 	BuyTicket(context.Context) (domain.TransactionDetail, error)
 }
 
-func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (domain.TransactionDetail, error) {
+func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (h domain.TransactionDetail, err error) {
 	mtx := &sync.Mutex{}
 	mtx.Lock()
 	defer mtx.Unlock()
@@ -46,9 +46,10 @@ func (uc *EventUsecaseImpl) BuyTicket(ctx context.Context) (domain.TransactionDe
 		if err != nil {
 			history.Status = "Failed"
 		}
-		history, _ := uc.tdRepo.Save(ctx, history)
+		h, _ := uc.tdRepo.Save(ctx, history)
 		err = uc.tdRepo.SaveTransactionDetailsEventsUsers(ctx, history.ID, event.ID, user.ID)
-		return history, err
+		h.ID = history.ID
+		return h, err
 	}()
 
 	history.Event = event
